@@ -27,6 +27,7 @@
           <?php
             echo $this->Form->input('owner');
             echo $this->Form->input('account_id', ['options' => $accounts]);
+            echo $this->Form->input('contact_id', ['options' => $contacts]);
             echo $this->Form->input('state');
             echo $this->Form->input('status');
             echo $this->Form->input('priority');

@@ -18,8 +18,8 @@ class AccountsControllerTest extends IntegrationTestCase
     public $fixtures = [
         'app.accounts',
         'app.users',
-        'app.cases',
-        'app.contacts'
+        'app.contacts',
+        'app.tickets'
     ];
 
     /**

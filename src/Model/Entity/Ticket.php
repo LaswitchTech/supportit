@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
  * @property int $account_id
+ * @property int $contact_id
  * @property int $state
  * @property int $status
  * @property int $priority
@@ -21,6 +22,7 @@ use Cake\ORM\Entity;
  * @property int $user_id
  *
  * @property \App\Model\Entity\Account $account
+ * @property \App\Model\Entity\Contact $contact
  * @property \App\Model\Entity\User $user
  */
 class Ticket extends Entity
@@ -40,6 +42,7 @@ class Ticket extends Entity
         'created' => true,
         'modified' => true,
         'account_id' => true,
+        'contact_id' => true,
         'state' => true,
         'status' => true,
         'priority' => true,
@@ -49,6 +52,7 @@ class Ticket extends Entity
         'resolution' => true,
         'user_id' => true,
         'account' => true,
+        'contact' => true,
         'user' => true
     ];
 }

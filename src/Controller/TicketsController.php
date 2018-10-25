@@ -21,7 +21,7 @@ class TicketsController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Accounts', 'Users']
+            'contain' => ['Accounts', 'Contacts', 'Users']
         ];
         $tickets = $this->paginate($this->Tickets);
 
@@ -38,7 +38,7 @@ class TicketsController extends AppController
     public function view($id = null)
     {
         $ticket = $this->Tickets->get($id, [
-            'contain' => ['Accounts', 'Users']
+            'contain' => ['Accounts', 'Contacts', 'Users']
         ]);
 
         $this->set('ticket', $ticket);
@@ -62,8 +62,9 @@ class TicketsController extends AppController
             }
         }
         $accounts = $this->Tickets->Accounts->find('list', ['limit' => 200]);
+        $contacts = $this->Tickets->Contacts->find('list', ['limit' => 200]);
         $users = $this->Tickets->Users->find('list', ['limit' => 200]);
-        $this->set(compact('ticket', 'accounts', 'users'));
+        $this->set(compact('ticket', 'accounts', 'contacts', 'users'));
         $this->set('_serialize', ['ticket']);
     }
 
@@ -89,8 +90,9 @@ class TicketsController extends AppController
             }
         }
         $accounts = $this->Tickets->Accounts->find('list', ['limit' => 200]);
+        $contacts = $this->Tickets->Contacts->find('list', ['limit' => 200]);
         $users = $this->Tickets->Users->find('list', ['limit' => 200]);
-        $this->set(compact('ticket', 'accounts', 'users'));
+        $this->set(compact('ticket', 'accounts', 'contacts', 'users'));
         $this->set('_serialize', ['ticket']);
     }
 

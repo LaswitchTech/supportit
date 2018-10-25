@@ -10,8 +10,8 @@ use Cake\Validation\Validator;
  * Accounts Model
  *
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\CasesTable|\Cake\ORM\Association\HasMany $Cases
  * @property \App\Model\Table\ContactsTable|\Cake\ORM\Association\HasMany $Contacts
+ * @property \App\Model\Table\TicketsTable|\Cake\ORM\Association\HasMany $Tickets
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\HasMany $Users
  *
  * @method \App\Model\Entity\Account get($primaryKey, $options = [])
@@ -48,10 +48,10 @@ class AccountsTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
-        $this->hasMany('Cases', [
+        $this->hasMany('Contacts', [
             'foreignKey' => 'account_id'
         ]);
-        $this->hasMany('Contacts', [
+        $this->hasMany('Tickets', [
             'foreignKey' => 'account_id'
         ]);
         $this->hasMany('Users', [
@@ -95,10 +95,10 @@ class AccountsTable extends Table
             ->notEmpty('website');
 
         $validator
-            ->scalar('status')
-            ->maxLength('status', 255)
-            ->requirePresence('status', 'create')
-            ->notEmpty('status');
+            ->scalar('type')
+            ->maxLength('type', 255)
+            ->requirePresence('type', 'create')
+            ->notEmpty('type');
 
         $validator
             ->scalar('description')

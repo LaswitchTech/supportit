@@ -32,8 +32,8 @@
                 <th><?= $this->Paginator->sort('id') ?></th>
                 <th><?= $this->Paginator->sort('owner') ?></th>
                 <th><?= $this->Paginator->sort('account_id') ?></th>
+                <th><?= $this->Paginator->sort('contact_id') ?></th>
                 <th><?= $this->Paginator->sort('state') ?></th>
-                <th><?= $this->Paginator->sort('status') ?></th>
                 <th><?= __('Actions') ?></th>
               </tr>
             </thead>
@@ -43,8 +43,8 @@
                 <td><?= $this->Number->format($ticket->id) ?></td>
                 <td><?= $this->Number->format($ticket->owner) ?></td>
                 <td><?= $ticket->has('account') ? $this->Html->link($ticket->account->name, ['controller' => 'Accounts', 'action' => 'view', $ticket->account->id]) : '' ?></td>
+                <td><?= $ticket->has('contact') ? $this->Html->link($ticket->contact->title, ['controller' => 'Contacts', 'action' => 'view', $ticket->contact->id]) : '' ?></td>
                 <td><?= $this->Number->format($ticket->state) ?></td>
-                <td><?= $this->Number->format($ticket->status) ?></td>
                 <td class="actions" style="white-space:nowrap">
                   <?= $this->Html->link(__('View'), ['action' => 'view', $ticket->id], ['class'=>'btn btn-info btn-xs']) ?>
                   <?= $this->Html->link(__('Edit'), ['action' => 'edit', $ticket->id], ['class'=>'btn btn-warning btn-xs']) ?>

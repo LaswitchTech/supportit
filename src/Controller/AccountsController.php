@@ -35,7 +35,7 @@ class AccountsController extends AppController
     public function view($id = null)
     {
         $account = $this->Accounts->get($id, [
-            'contain' => ['Users', 'Cases', 'Contacts']
+            'contain' => ['Users', 'Contacts', 'Tickets']
         ]);
 
         $this->set('account', $account);

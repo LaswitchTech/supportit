@@ -33,9 +33,9 @@
                                         <dd>
                                             <?= h($account->website) ?>
                                         </dd>
-                                                                                                                                                            <dt><?= __('Status') ?></dt>
+                                                                                                                                                            <dt><?= __('Type') ?></dt>
                                         <dd>
-                                            <?= h($account->status) ?>
+                                            <?= h($account->type) ?>
                                         </dd>
                                                                                                                                     
                                             
@@ -184,150 +184,6 @@
                                     <?= $this->Html->link(__('Edit'), ['controller' => 'Users', 'action' => 'edit', $users->id], ['class'=>'btn btn-warning btn-xs']) ?>
 
                                     <?= $this->Form->postLink(__('Delete'), ['controller' => 'Users', 'action' => 'delete', $users->id], ['confirm' => __('Are you sure you want to delete # {0}?', $users->id), 'class'=>'btn btn-danger btn-xs']) ?>    
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                                    
-                        </tbody>
-                    </table>
-
-                <?php endif; ?>
-
-                </div>
-                <!-- /.box-body -->
-            </div>
-            <!-- /.box -->
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header">
-                    <i class="fa fa-share-alt"></i>
-                    <h3 class="box-title"><?= __('Related {0}', ['Cases']) ?></h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
-
-                <?php if (!empty($account->cases)): ?>
-
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                                                    
-                                    <th>
-                                    Id
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    Owner
-                                    </th>
-                                        
-                                                                                                                                            
-                                    <th>
-                                    Account Id
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    State
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    Status
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    Priority
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    Type
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    Subject
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    Description
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    Resolution
-                                    </th>
-                                        
-                                                                    
-                                    <th>
-                                    User Id
-                                    </th>
-                                        
-                                                                    
-                                <th>
-                                    <?php echo __('Actions'); ?>
-                                </th>
-                            </tr>
-
-                            <?php foreach ($account->cases as $cases): ?>
-                                <tr>
-                                                                        
-                                    <td>
-                                    <?= h($cases->id) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->owner) ?>
-                                    </td>
-                                                                                                                                                
-                                    <td>
-                                    <?= h($cases->account_id) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->state) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->status) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->priority) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->type) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->subject) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->description) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->resolution) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($cases->user_id) ?>
-                                    </td>
-                                    
-                                                                        <td class="actions">
-                                    <?= $this->Html->link(__('View'), ['controller' => 'Cases', 'action' => 'view', $cases->id], ['class'=>'btn btn-info btn-xs']) ?>
-
-                                    <?= $this->Html->link(__('Edit'), ['controller' => 'Cases', 'action' => 'edit', $cases->id], ['class'=>'btn btn-warning btn-xs']) ?>
-
-                                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Cases', 'action' => 'delete', $cases->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cases->id), 'class'=>'btn btn-danger btn-xs']) ?>    
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -526,6 +382,159 @@
                                     <?= $this->Html->link(__('Edit'), ['controller' => 'Contacts', 'action' => 'edit', $contacts->id], ['class'=>'btn btn-warning btn-xs']) ?>
 
                                     <?= $this->Form->postLink(__('Delete'), ['controller' => 'Contacts', 'action' => 'delete', $contacts->id], ['confirm' => __('Are you sure you want to delete # {0}?', $contacts->id), 'class'=>'btn btn-danger btn-xs']) ?>    
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                                    
+                        </tbody>
+                    </table>
+
+                <?php endif; ?>
+
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <i class="fa fa-share-alt"></i>
+                    <h3 class="box-title"><?= __('Related {0}', ['Tickets']) ?></h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+
+                <?php if (!empty($account->tickets)): ?>
+
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr>
+                                                                    
+                                    <th>
+                                    Id
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Owner
+                                    </th>
+                                        
+                                                                                                                                            
+                                    <th>
+                                    Account Id
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Contact Id
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    State
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Status
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Priority
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Type
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Subject
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Description
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    Resolution
+                                    </th>
+                                        
+                                                                    
+                                    <th>
+                                    User Id
+                                    </th>
+                                        
+                                                                    
+                                <th>
+                                    <?php echo __('Actions'); ?>
+                                </th>
+                            </tr>
+
+                            <?php foreach ($account->tickets as $tickets): ?>
+                                <tr>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->id) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->owner) ?>
+                                    </td>
+                                                                                                                                                
+                                    <td>
+                                    <?= h($tickets->account_id) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->contact_id) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->state) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->status) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->priority) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->type) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->subject) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->description) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->resolution) ?>
+                                    </td>
+                                                                        
+                                    <td>
+                                    <?= h($tickets->user_id) ?>
+                                    </td>
+                                    
+                                                                        <td class="actions">
+                                    <?= $this->Html->link(__('View'), ['controller' => 'Tickets', 'action' => 'view', $tickets->id], ['class'=>'btn btn-info btn-xs']) ?>
+
+                                    <?= $this->Html->link(__('Edit'), ['controller' => 'Tickets', 'action' => 'edit', $tickets->id], ['class'=>'btn btn-warning btn-xs']) ?>
+
+                                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Tickets', 'action' => 'delete', $tickets->id], ['confirm' => __('Are you sure you want to delete # {0}?', $tickets->id), 'class'=>'btn btn-danger btn-xs']) ?>    
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

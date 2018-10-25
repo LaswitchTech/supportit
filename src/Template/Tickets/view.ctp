@@ -25,6 +25,10 @@
                                 <dd>
                                     <?= $ticket->has('account') ? $ticket->account->name : '' ?>
                                 </dd>
+                                                                                                                <dt><?= __('Contact') ?></dt>
+                                <dd>
+                                    <?= $ticket->has('contact') ? $ticket->contact->title : '' ?>
+                                </dd>
                                                                                                                         <dt><?= __('Subject') ?></dt>
                                         <dd>
                                             <?= h($ticket->subject) ?>

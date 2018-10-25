@@ -29,7 +29,7 @@
             echo $this->Form->input('name');
             echo $this->Form->input('phone');
             echo $this->Form->input('website');
-            echo $this->Form->input('status');
+            echo $this->Form->input('type');
             echo $this->Form->input('description');
             echo $this->Form->input('user_id');
           ?>

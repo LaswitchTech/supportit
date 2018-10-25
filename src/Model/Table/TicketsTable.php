@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
  * Tickets Model
  *
  * @property \App\Model\Table\AccountsTable|\Cake\ORM\Association\BelongsTo $Accounts
+ * @property \App\Model\Table\ContactsTable|\Cake\ORM\Association\BelongsTo $Contacts
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  *
  * @method \App\Model\Entity\Ticket get($primaryKey, $options = [])
@@ -44,6 +45,10 @@ class TicketsTable extends Table
 
         $this->belongsTo('Accounts', [
             'foreignKey' => 'account_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Contacts', [
+            'foreignKey' => 'contact_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Users', [
@@ -118,6 +123,7 @@ class TicketsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['account_id'], 'Accounts'));
+        $rules->add($rules->existsIn(['contact_id'], 'Contacts'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;
