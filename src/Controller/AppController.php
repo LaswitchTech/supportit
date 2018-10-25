@@ -45,11 +45,37 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Form' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password'
+                    ]
+                ]
+            ],
+            'loginAction' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ]
+        ]);
 
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
+    }
+
+    public function beforeRender(Event $event)
+    {
+        // Load Bootstrap Theme
+        $this->viewBuilder()->setTheme('AdminLTE');
+        // Check Login
+        if($this->request->session()->read('Auth.User')){
+            $this->set('loggedIn', true);
+        } else {
+            $this->set('loggedIn', false);
+        }
     }
 }
