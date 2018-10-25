@@ -4,26 +4,24 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Case Entity
+ * Account Entity
  *
  * @property int $id
  * @property int $owner
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
- * @property int $account_id
- * @property int $state
- * @property int $status
- * @property int $priority
- * @property int $type
- * @property string $subject
+ * @property string $name
+ * @property string $phone
+ * @property string $website
+ * @property string $status
  * @property string $description
- * @property string $resolution
  * @property int $user_id
  *
- * @property \App\Model\Entity\Account $account
- * @property \App\Model\Entity\User $user
+ * @property \App\Model\Entity\User[] $users
+ * @property \App\Model\Entity\Case[] $cases
+ * @property \App\Model\Entity\Contact[] $contacts
  */
-class Case extends Entity
+class Account extends Entity
 {
 
     /**
@@ -39,16 +37,14 @@ class Case extends Entity
         'owner' => true,
         'created' => true,
         'modified' => true,
-        'account_id' => true,
-        'state' => true,
+        'name' => true,
+        'phone' => true,
+        'website' => true,
         'status' => true,
-        'priority' => true,
-        'type' => true,
-        'subject' => true,
         'description' => true,
-        'resolution' => true,
         'user_id' => true,
-        'account' => true,
-        'user' => true
+        'users' => true,
+        'cases' => true,
+        'contacts' => true
     ];
 }

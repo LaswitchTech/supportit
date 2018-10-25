@@ -1,5 +1,4 @@
 <?php
-include '../config.php';
 return [
     /**
      * Debug Level:

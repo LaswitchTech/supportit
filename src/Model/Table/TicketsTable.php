@@ -7,23 +7,23 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Cases Model
+ * Tickets Model
  *
  * @property \App\Model\Table\AccountsTable|\Cake\ORM\Association\BelongsTo $Accounts
  * @property \App\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  *
- * @method \App\Model\Entity\Case get($primaryKey, $options = [])
- * @method \App\Model\Entity\Case newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\Case[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\Case|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Case|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\Case patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\Case[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\Case findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\Ticket get($primaryKey, $options = [])
+ * @method \App\Model\Entity\Ticket newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\Ticket[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\Ticket|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Ticket|bool saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\Ticket patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\Ticket[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\Ticket findOrCreate($search, callable $callback = null, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
-class CasesTable extends Table
+class TicketsTable extends Table
 {
 
     /**
@@ -36,7 +36,7 @@ class CasesTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('cases');
+        $this->setTable('tickets');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
 
