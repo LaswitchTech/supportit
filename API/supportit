@@ -581,7 +581,7 @@ function Scheduler(){
     if [ $debug = "true" ]; then
         echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Scheduler ${NORM}" | tee -a $logfile
     fi
-    Command="php ${MAINDIR}/bin/scheduler.php"; Executing "$Command"
+    Command="php ${MAINDIR}/bin/test.php"; Executing "$Command"
 }
 
 #==============================================================================
