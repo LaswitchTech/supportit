@@ -648,7 +648,7 @@ done
 if [ $debug = "true" ]; then
     duration=$SECONDS
     echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed." | tee -a $logfile
-    cat $logfile | grep "[ERROR  ]"
+    cat $logfile | egrep "\[ERROR  \]"
 fi
 
 exit 0
