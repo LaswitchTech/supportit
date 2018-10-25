@@ -52,18 +52,6 @@ class DisallowMultipleAssignmentsSniff implements Sniff
             }
         }
 
-        // Ignore assignments in WHILE loop conditions.
-        if (isset($tokens[$stackPtr]['nested_parenthesis']) === true) {
-            $nested = $tokens[$stackPtr]['nested_parenthesis'];
-            foreach ($nested as $opener => $closer) {
-                if (isset($tokens[$opener]['parenthesis_owner']) === true
-                    && $tokens[$tokens[$opener]['parenthesis_owner']]['code'] === T_WHILE
-                ) {
-                    return;
-                }
-            }
-        }
-
         /*
             The general rule is:
             Find an equal sign and go backwards along the line. If you hit an
@@ -134,10 +122,10 @@ class DisallowMultipleAssignmentsSniff implements Sniff
 
         // Ignore the first part of FOR loops as we are allowed to
         // assign variables there even though the variable is not the
-        // first thing on the line.
+        // first thing on the line. Also ignore WHILE loops.
         if ($tokens[$varToken]['code'] === T_OPEN_PARENTHESIS && isset($tokens[$varToken]['parenthesis_owner']) === true) {
             $owner = $tokens[$varToken]['parenthesis_owner'];
-            if ($tokens[$owner]['code'] === T_FOR) {
+            if ($tokens[$owner]['code'] === T_FOR || $tokens[$owner]['code'] === T_WHILE) {
                 return;
             }
         }

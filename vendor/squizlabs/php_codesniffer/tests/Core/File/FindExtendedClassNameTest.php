@@ -60,87 +60,135 @@ class FindExtendedClassNameTest extends TestCase
 
 
     /**
-     * Test retrieving the name of the class being extended by another class
-     * (or interface).
-     *
-     * @param string $identifier Comment which preceeds the test case.
-     * @param bool   $expected   Expected function output.
-     *
-     * @dataProvider dataExtendedClass
+     * Test a class that extends another.
      *
      * @return void
      */
-    public function testFindExtendedClassName($identifier, $expected)
+    public function testExtendedClass()
     {
-        $start   = ($this->phpcsFile->numTokens - 1);
-        $delim   = $this->phpcsFile->findPrevious(
+        $start = ($this->phpcsFile->numTokens - 1);
+        $class = $this->phpcsFile->findPrevious(
             T_COMMENT,
             $start,
             null,
             false,
-            $identifier
+            '/* testExtendedClass */'
         );
-        $OOToken = $this->phpcsFile->findNext([T_CLASS, T_ANON_CLASS, T_INTERFACE], ($delim + 1));
 
-        $result = $this->phpcsFile->findExtendedClassName($OOToken);
-        $this->assertSame($expected, $result);
+        $found = $this->phpcsFile->findExtendedClassName(($class + 2));
+        $this->assertSame('testFECNClass', $found);
 
-    }//end testFindExtendedClassName()
+    }//end testExtendedClass()
 
 
     /**
-     * Data provider for the FindExtendedClassName test.
+     * Test a class that extends another, using namespaces.
      *
-     * @see testFindExtendedClassName()
-     *
-     * @return array
+     * @return void
      */
-    public function dataExtendedClass()
+    public function testNamespacedClass()
     {
-        return [
-            [
-                '/* testExtendedClass */',
-                'testFECNClass',
-            ],
-            [
-                '/* testNamespacedClass */',
-                '\PHP_CodeSniffer\Tests\Core\File\testFECNClass',
-            ],
-            [
-                '/* testNonExtendedClass */',
-                false,
-            ],
-            [
-                '/* testInterface */',
-                false,
-            ],
-            [
-                '/* testInterfaceThatExtendsInterface */',
-                'testFECNInterface',
-            ],
-            [
-                '/* testInterfaceThatExtendsFQCNInterface */',
-                '\PHP_CodeSniffer\Tests\Core\File\testFECNInterface',
-            ],
-            [
-                '/* testNestedExtendedClass */',
-                false,
-            ],
-            [
-                '/* testNestedExtendedAnonClass */',
-                'testFECNAnonClass',
-            ],
-            [
-                '/* testClassThatExtendsAndImplements */',
-                'testFECNClass',
-            ],
-            [
-                '/* testClassThatImplementsAndExtends */',
-                'testFECNClass',
-            ],
-        ];
+        $start = ($this->phpcsFile->numTokens - 1);
+        $class = $this->phpcsFile->findPrevious(
+            T_COMMENT,
+            $start,
+            null,
+            false,
+            '/* testNamespacedClass */'
+        );
 
-    }//end dataExtendedClass()
+        $found = $this->phpcsFile->findExtendedClassName(($class + 2));
+        $this->assertSame('\PHP_CodeSniffer\Tests\Core\File\testFECNClass', $found);
+
+    }//end testNamespacedClass()
+
+
+    /**
+     * Test a class that doesn't extend another.
+     *
+     * @return void
+     */
+    public function testNonExtendedClass()
+    {
+        $start = ($this->phpcsFile->numTokens - 1);
+        $class = $this->phpcsFile->findPrevious(
+            T_COMMENT,
+            $start,
+            null,
+            false,
+            '/* testNonExtendedClass */'
+        );
+
+        $found = $this->phpcsFile->findExtendedClassName(($class + 2));
+        $this->assertFalse($found);
+
+    }//end testNonExtendedClass()
+
+
+    /**
+     * Test an interface.
+     *
+     * @return void
+     */
+    public function testInterface()
+    {
+        $start = ($this->phpcsFile->numTokens - 1);
+        $class = $this->phpcsFile->findPrevious(
+            T_COMMENT,
+            $start,
+            null,
+            false,
+            '/* testInterface */'
+        );
+
+        $found = $this->phpcsFile->findExtendedClassName(($class + 2));
+        $this->assertFalse($found);
+
+    }//end testInterface()
+
+
+    /**
+     * Test an interface that extends another.
+     *
+     * @return void
+     */
+    public function testExtendedInterface()
+    {
+        $start = ($this->phpcsFile->numTokens - 1);
+        $class = $this->phpcsFile->findPrevious(
+            T_COMMENT,
+            $start,
+            null,
+            false,
+            '/* testInterfaceThatExtendsInterface */'
+        );
+
+        $found = $this->phpcsFile->findExtendedClassName(($class + 2));
+        $this->assertSame('testFECNInterface', $found);
+
+    }//end testExtendedInterface()
+
+
+    /**
+     * Test an interface that extends another, using namespaces.
+     *
+     * @return void
+     */
+    public function testExtendedNamespacedInterface()
+    {
+        $start = ($this->phpcsFile->numTokens - 1);
+        $class = $this->phpcsFile->findPrevious(
+            T_COMMENT,
+            $start,
+            null,
+            false,
+            '/* testInterfaceThatExtendsFQCNInterface */'
+        );
+
+        $found = $this->phpcsFile->findExtendedClassName(($class + 2));
+        $this->assertSame('\PHP_CodeSniffer\Tests\Core\File\testFECNInterface', $found);
+
+    }//end testExtendedNamespacedInterface()
 
 
 }//end class

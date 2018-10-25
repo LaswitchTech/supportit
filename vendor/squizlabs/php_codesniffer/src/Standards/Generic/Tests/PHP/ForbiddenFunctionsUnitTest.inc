@@ -43,7 +43,7 @@ class RightSideTest {
 class RightSideVisTest {
     use DelProvider {
         delete as protected delete;
-        DelProvider::delete insteadof delete;
+        delete insteadof delete;
     }
 }
 

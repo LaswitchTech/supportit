@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit14ce9296233480f32c1491f638660c43
+class ComposerStaticInit60ca9adc8b4e8e38a84ea9e62427e80e
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -22,7 +22,6 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         'ede59e3a405fb689cd1cebb7bb1db3fb' => __DIR__ . '/..' . '/cakephp/cakephp/src/Collection/functions.php',
         '90236b492da7ca2983a2ad6e33e4152e' => __DIR__ . '/..' . '/cakephp/cakephp/src/I18n/functions.php',
         'b1fc73705e1bec51cd2b20a32cf1c60a' => __DIR__ . '/..' . '/cakephp/cakephp/src/Utility/bootstrap.php',
-        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
     );
@@ -46,7 +45,6 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         ),
         'S' => 
         array (
-            'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
@@ -54,6 +52,7 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
+            'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
             'Seld\\PharUtils\\' => 15,
@@ -76,8 +75,10 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         array (
             'JsonSchema\\' => 11,
             'Jasny\\Twig\\' => 11,
-            'JakubOnderka\\PhpConsoleHighlighter\\' => 35,
-            'JakubOnderka\\PhpConsoleColor\\' => 29,
+        ),
+        'G' => 
+        array (
+            'Gentelella\\' => 11,
         ),
         'D' => 
         array (
@@ -99,6 +100,7 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         ),
         'B' => 
         array (
+            'BootstrapUI\\' => 12,
             'Bake\\' => 5,
         ),
         'A' => 
@@ -128,10 +130,6 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
         ),
-        'Symfony\\Polyfill\\Php72\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php72',
-        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
@@ -159,6 +157,10 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         'Symfony\\Component\\Filesystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
+        ),
+        'Symfony\\Component\\Debug\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/debug',
         ),
         'Symfony\\Component\\Console\\' => 
         array (
@@ -212,13 +214,9 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         array (
             0 => __DIR__ . '/..' . '/jasny/twig-extensions/src',
         ),
-        'JakubOnderka\\PhpConsoleHighlighter\\' => 
+        'Gentelella\\' => 
         array (
-            0 => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src',
-        ),
-        'JakubOnderka\\PhpConsoleColor\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
+            0 => __DIR__ . '/..' . '/backstageel/cakephp-gentelella-theme/src',
         ),
         'DebugKit\\Test\\Fixture\\' => 
         array (
@@ -267,6 +265,10 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         'CakePHP\\' => 
         array (
             0 => __DIR__ . '/..' . '/cakephp/cakephp-codesniffer/CakePHP',
+        ),
+        'BootstrapUI\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/friendsofcake/bootstrap-ui/src',
         ),
         'Bake\\' => 
         array (
@@ -321,6 +323,17 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
                 0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
         ),
+        'J' => 
+        array (
+            'JakubOnderka\\PhpConsoleHighlighter' => 
+            array (
+                0 => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src',
+            ),
+            'JakubOnderka\\PhpConsoleColor' => 
+            array (
+                0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
+            ),
+        ),
         'D' => 
         array (
             'Detection' => 
@@ -345,11 +358,11 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit14ce9296233480f32c1491f638660c43::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit14ce9296233480f32c1491f638660c43::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit14ce9296233480f32c1491f638660c43::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit14ce9296233480f32c1491f638660c43::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit14ce9296233480f32c1491f638660c43::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit60ca9adc8b4e8e38a84ea9e62427e80e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit60ca9adc8b4e8e38a84ea9e62427e80e::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit60ca9adc8b4e8e38a84ea9e62427e80e::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit60ca9adc8b4e8e38a84ea9e62427e80e::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit60ca9adc8b4e8e38a84ea9e62427e80e::$classMap;
 
         }, null, ClassLoader::class);
     }

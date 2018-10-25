@@ -1119,7 +1119,7 @@ class PHP extends Tokenizer
 
                         // Any T_ARRAY tokens we find between here and the next
                         // token that can't be part of the return type need to be
-                        // converted to T_STRING tokens.
+                        // coverted to T_STRING tokens.
                         for ($x; $x < $numTokens; $x++) {
                             if (is_array($tokens[$x]) === false || isset($allowed[$tokens[$x][0]]) === false) {
                                 break;
@@ -1313,15 +1313,9 @@ class PHP extends Tokenizer
                     }
 
                     if ($tokens[$i] === ')') {
-                        $parenCount = 1;
                         for ($i--; $i > 0; $i--) {
                             if ($tokens[$i] === '(') {
-                                $parenCount--;
-                                if ($parenCount === 0) {
-                                    break;
-                                }
-                            } else if ($tokens[$i] === ')') {
-                                $parenCount++;
+                                break;
                             }
                         }
 
@@ -1378,7 +1372,7 @@ class PHP extends Tokenizer
                 // where "class" should be T_STRING instead of T_CLASS.
                 if (($newToken['code'] === T_CLASS
                     || $newToken['code'] === T_FUNCTION)
-                    && $finalTokens[$lastNotEmptyToken]['code'] === T_DOUBLE_COLON
+                    && $finalTokens[($newStackPtr - 1)]['code'] === T_DOUBLE_COLON
                 ) {
                     $newToken['code'] = T_STRING;
                     $newToken['type'] = 'T_STRING';

@@ -431,27 +431,24 @@ class ArrayDeclarationSniff implements Sniff
 
                 if ($keyUsed === false) {
                     if ($tokens[($nextToken - 1)]['code'] === T_WHITESPACE) {
-                        $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($nextToken - 1), null, true);
-                        if (($tokens[$prev]['code'] !== T_END_HEREDOC
-                            && $tokens[$prev]['code'] !== T_END_NOWDOC)
-                            || $tokens[($nextToken - 1)]['line'] === $tokens[$nextToken]['line']
-                        ) {
-                            $content = $tokens[($nextToken - 2)]['content'];
-                            if ($tokens[($nextToken - 1)]['content'] === $phpcsFile->eolChar) {
-                                $spaceLength = 'newline';
-                            } else {
-                                $spaceLength = $tokens[($nextToken - 1)]['length'];
-                            }
-
-                            $error = 'Expected 0 spaces before comma; %s found';
-                            $data  = [$spaceLength];
-
-                            $fix = $phpcsFile->addFixableError($error, $nextToken, 'SpaceBeforeComma', $data);
-                            if ($fix === true) {
-                                $phpcsFile->fixer->replaceToken(($nextToken - 1), '');
-                            }
+                        $content = $tokens[($nextToken - 2)]['content'];
+                        if ($tokens[($nextToken - 1)]['content'] === $phpcsFile->eolChar) {
+                            $spaceLength = 'newline';
+                        } else {
+                            $spaceLength = $tokens[($nextToken - 1)]['length'];
                         }
-                    }//end if
+
+                        $error = 'Expected 0 spaces between "%s" and comma; %s found';
+                        $data  = [
+                            $content,
+                            $spaceLength,
+                        ];
+
+                        $fix = $phpcsFile->addFixableError($error, $nextToken, 'SpaceBeforeComma', $data);
+                        if ($fix === true) {
+                            $phpcsFile->fixer->replaceToken(($nextToken - 1), '');
+                        }
+                    }
 
                     $valueContent = $phpcsFile->findNext(
                         Tokens::$emptyTokens,
@@ -485,19 +482,14 @@ class ArrayDeclarationSniff implements Sniff
                 if ($indexStart === $indexEnd) {
                     $currentEntry['index']         = $indexEnd;
                     $currentEntry['index_content'] = $tokens[$indexEnd]['content'];
-                    $currentEntry['index_length']  = $tokens[$indexEnd]['length'];
                 } else {
                     $currentEntry['index']         = $indexStart;
-                    $currentEntry['index_content'] = '';
-                    $currentEntry['index_length']  = 0;
-                    for ($i = $indexStart; $i <= $indexEnd; $i++) {
-                        $currentEntry['index_content'] .= $tokens[$i]['content'];
-                        $currentEntry['index_length']  += $tokens[$i]['length'];
-                    }
+                    $currentEntry['index_content'] = $phpcsFile->getTokensAsString($indexStart, ($indexEnd - $indexStart + 1));
                 }
 
-                if ($maxLength < $currentEntry['index_length']) {
-                    $maxLength = $currentEntry['index_length'];
+                $indexLength = strlen($currentEntry['index_content']);
+                if ($maxLength < $indexLength) {
+                    $maxLength = $indexLength;
                 }
 
                 // Find the value of this index.
@@ -744,8 +736,8 @@ class ArrayDeclarationSniff implements Sniff
 
             $arrowStart = ($tokens[$index['index']]['column'] + $maxLength + 1);
             if ($tokens[$index['arrow']]['column'] !== $arrowStart) {
-                $expected = ($arrowStart - ($index['index_length'] + $tokens[$index['index']]['column']));
-                $found    = ($tokens[$index['arrow']]['column'] - ($index['index_length'] + $tokens[$index['index']]['column']));
+                $expected = ($arrowStart - (strlen($index['index_content']) + $tokens[$index['index']]['column']));
+                $found    = ($tokens[$index['arrow']]['column'] - (strlen($index['index_content']) + $tokens[$index['index']]['column']));
                 $error    = 'Array double arrow not aligned correctly; expected %s space(s) but found %s';
                 $data     = [
                     $expected,
@@ -845,7 +837,7 @@ class ArrayDeclarationSniff implements Sniff
 
             // Check that there is no space before the comma.
             if ($nextComma !== false && $tokens[($nextComma - 1)]['code'] === T_WHITESPACE) {
-                // Here/nowdoc closing tags must have the comma on the next line.
+                // Here/nowdoc closing tags must have the command on the next line.
                 $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($nextComma - 1), null, true);
                 if ($tokens[$prev]['code'] !== T_END_HEREDOC && $tokens[$prev]['code'] !== T_END_NOWDOC) {
                     $content     = $tokens[($nextComma - 2)]['content'];

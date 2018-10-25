@@ -75,10 +75,6 @@ class CommentedOutCodeSniff implements Sniff
 
         $lastCommentBlockToken = $stackPtr;
         for ($i = $stackPtr; $i < $phpcsFile->numTokens; $i++) {
-            if (isset(Tokens::$emptyTokens[$tokens[$i]['code']]) === false) {
-                break;
-            }
-
             if ($tokens[$i]['code'] === T_WHITESPACE) {
                 continue;
             }
@@ -88,18 +84,9 @@ class CommentedOutCodeSniff implements Sniff
                 continue;
             }
 
-            if ($commentStyle === 'line'
-                && ($lastLineSeen + 1) <= $tokens[$i]['line']
-                && strpos($tokens[$i]['content'], '/*') === 0
+            if ($tokens[$stackPtr]['code'] !== $tokens[$i]['code']
+                || ($lastLineSeen + 1) < $tokens[$i]['line']
             ) {
-                // First non-whitespace token on a new line is start of a different style comment.
-                break;
-            }
-
-            if ($commentStyle === 'line'
-                && ($lastLineSeen + 1) < $tokens[$i]['line']
-            ) {
-                // Blank line breaks a '//' style comment block.
                 break;
             }
 
@@ -109,7 +96,6 @@ class CommentedOutCodeSniff implements Sniff
             */
 
             $tokenContent = trim($tokens[$i]['content']);
-            $break        = false;
 
             if ($commentStyle === 'line') {
                 if (substr($tokenContent, 0, 2) === '//') {
@@ -130,7 +116,6 @@ class CommentedOutCodeSniff implements Sniff
 
                 if (substr($tokenContent, -2) === '*/') {
                     $tokenContent = substr($tokenContent, 0, -2);
-                    $break        = true;
                 }
 
                 if (substr($tokenContent, 0, 1) === '*') {
@@ -142,15 +127,10 @@ class CommentedOutCodeSniff implements Sniff
             $lastLineSeen = $tokens[$i]['line'];
 
             $lastCommentBlockToken = $i;
-
-            if ($break === true) {
-                // Closer of a block comment found.
-                break;
-            }
         }//end for
 
         // Ignore typical warning suppression annotations from other tools.
-        if (preg_match('`^\s*@[A-Za-z()\._-]+\s*$`', $content) === 1) {
+        if (preg_match('`^\s*@[A-Za-z]+\s*$`', $content) === 1) {
             return ($lastCommentBlockToken + 1);
         }
 

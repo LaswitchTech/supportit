@@ -198,18 +198,19 @@ Type::build('timestamp')
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
 //Inflector::rules('transliteration', ['/å/' => 'aa']);
+Plugin::load('Gentelella', ['bootstrap' => true, 'routes' => true]);
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
 Configure::write('Theme', [
-    'title' => $SITE['title'],
+  "title" => "SupportIT",
     'logo' => [
-        'mini' => $SITE['logo']['mini'],
-        'large' => $SITE['logo']['large']
+      "mini" => "<b>SIT</b>",
+      "large" => "Support<b>IT</b>",
     ],
     'login' => [
-        'show_remember' => $SITE['login']['show_remember'],
-        'show_register' => $SITE['login']['show_register'],
-        'show_social' => $SITE['login']['show_social']
+      "show_remember" => "true",
+      "show_register" => "false",
+      "show_social" => "false",
     ],
     'folder' => ROOT,
-    'skin' => $SITE['skin']
+    'skin' => "blue"
 ]);

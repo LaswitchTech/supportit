@@ -34,14 +34,14 @@ class ViewBuilder implements JsonSerializable, Serializable
     /**
      * The subdirectory to the template.
      *
-     * @var string|null
+     * @var string
      */
     protected $_templatePath;
 
     /**
      * The template file to render.
      *
-     * @var string|null
+     * @var string
      */
     protected $_template;
 
@@ -62,28 +62,28 @@ class ViewBuilder implements JsonSerializable, Serializable
     /**
      * The layout name to render.
      *
-     * @var string|null|false
+     * @var string
      */
     protected $_layout;
 
     /**
      * Whether or not autoLayout should be enabled.
      *
-     * @var bool|null
+     * @var bool
      */
     protected $_autoLayout;
 
     /**
      * The layout path to build the view with.
      *
-     * @var string|null
+     * @var string
      */
     protected $_layoutPath;
 
     /**
      * The view variables to use
      *
-     * @var string|null
+     * @var string
      */
     protected $_name;
 
@@ -92,7 +92,7 @@ class ViewBuilder implements JsonSerializable, Serializable
      * Can either use plugin notation, a short name
      * or a fully namespaced classname.
      *
-     * @var string|null
+     * @var string
      */
     protected $_className;
 
@@ -212,7 +212,7 @@ class ViewBuilder implements JsonSerializable, Serializable
      * Returns if CakePHP's conventional mode of applying layout files is enabled.
      * Disabled means that layouts will not be automatically applied to rendered views.
      *
-     * @return bool|null
+     * @return bool
      */
     public function isAutoLayoutEnabled()
     {
@@ -566,7 +566,7 @@ class ViewBuilder implements JsonSerializable, Serializable
     /**
      * Gets the view classname.
      *
-     * @return string|null
+     * @return string
      */
     public function getClassName()
     {

@@ -388,7 +388,7 @@ class File
                     || substr($commentTextLower, 0, 10) === '@phpcs:set'
                 ) {
                     // If the @phpcs: syntax is being used, strip the @ to make
-                    // comparisons easier.
+                    // comparisions easier.
                     if ($commentText[0] === '@') {
                         $commentText = substr($commentText, 1);
                     }
@@ -1605,7 +1605,7 @@ class File
      * <code>
      *   array(
      *    'scope'           => 'public', // public protected or protected.
-     *    'scope_specified' => false,    // true if the scope was explicitly specified.
+     *    'scope_specified' => false,    // true if the scope was explicitely specified.
      *    'is_static'       => false,    // true if the static keyword was found.
      *   );
      * </code>
@@ -2377,12 +2377,12 @@ class File
             return false;
         }
 
-        if (isset($this->tokens[$stackPtr]['scope_opener']) === false) {
+        if (isset($this->tokens[$stackPtr]['scope_closer']) === false) {
             return false;
         }
 
-        $classOpenerIndex = $this->tokens[$stackPtr]['scope_opener'];
-        $extendsIndex     = $this->findNext(T_EXTENDS, $stackPtr, $classOpenerIndex);
+        $classCloserIndex = $this->tokens[$stackPtr]['scope_closer'];
+        $extendsIndex     = $this->findNext(T_EXTENDS, $stackPtr, $classCloserIndex);
         if (false === $extendsIndex) {
             return false;
         }
@@ -2393,7 +2393,7 @@ class File
             T_WHITESPACE,
         ];
 
-        $end  = $this->findNext($find, ($extendsIndex + 1), ($classOpenerIndex + 1), true);
+        $end  = $this->findNext($find, ($extendsIndex + 1), $classCloserIndex, true);
         $name = $this->getTokensAsString(($extendsIndex + 1), ($end - $extendsIndex - 1));
         $name = trim($name);
 

@@ -30,7 +30,6 @@ if (!$service->isEnabled() || php_sapi_name() === 'cli' || php_sapi_name() === '
 }
 
 if (!empty($service->getConfig('panels')['DebugKit.Deprecations'])) {
-    $errorLevel = Configure::read('Error.errorLevel', E_ALL | E_STRICT);
     $previousHandler = set_error_handler(
         function ($code, $message, $file, $line, $context = null) use (&$previousHandler) {
             if ($code == E_USER_DEPRECATED || $code == E_DEPRECATED) {
@@ -41,8 +40,7 @@ if (!empty($service->getConfig('panels')['DebugKit.Deprecations'])) {
             if ($previousHandler) {
                 return $previousHandler($code, $message, $file, $line, $context);
             }
-        },
-        $errorLevel | E_USER_DEPRECATED | E_DEPRECATED
+        }
     );
 }
 

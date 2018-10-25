@@ -15,12 +15,10 @@ if (!function_exists('dump')) {
     /**
      * @author Nicolas Grekas <p@tchwork.com>
      */
-    function dump($var, ...$moreVars)
+    function dump($var)
     {
-        VarDumper::dump($var);
-
-        foreach ($moreVars as $v) {
-            VarDumper::dump($v);
+        foreach (func_get_args() as $var) {
+            VarDumper::dump($var);
         }
 
         if (1 < func_num_args()) {
@@ -28,18 +26,5 @@ if (!function_exists('dump')) {
         }
 
         return $var;
-    }
-}
-
-if (!function_exists('dd')) {
-    function dd($var, ...$moreVars)
-    {
-        VarDumper::dump($var);
-
-        foreach ($moreVars as $v) {
-            VarDumper::dump($v);
-        }
-
-        exit(1);
     }
 }

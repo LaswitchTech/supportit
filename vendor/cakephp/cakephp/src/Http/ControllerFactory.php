@@ -43,10 +43,7 @@ class ControllerFactory
             $this->missingController($request);
         }
 
-        /** @var \Cake\Controller\Controller $controller */
-        $controller = $reflection->newInstance($request, $response);
-
-        return $controller;
+        return $reflection->newInstance($request, $response);
     }
 
     /**

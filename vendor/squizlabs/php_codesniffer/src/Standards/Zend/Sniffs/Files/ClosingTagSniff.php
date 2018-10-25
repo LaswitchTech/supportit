@@ -11,7 +11,6 @@ namespace PHP_CodeSniffer\Standards\Zend\Sniffs\Files;
 
 use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
-use PHP_CodeSniffer\Util\Tokens;
 
 class ClosingTagSniff implements Sniff
 {
@@ -52,22 +51,13 @@ class ClosingTagSniff implements Sniff
             $error = 'A closing tag is not permitted at the end of a PHP file';
             $fix   = $phpcsFile->addFixableError($error, $last, 'NotAllowed');
             if ($fix === true) {
-                $phpcsFile->fixer->beginChangeset();
-                $phpcsFile->fixer->replaceToken($last, $phpcsFile->eolChar);
-                $prev = $phpcsFile->findPrevious(Tokens::$emptyTokens, ($last - 1), null, true);
-                if ($tokens[$prev]['code'] !== T_SEMICOLON
-                    && $tokens[$prev]['code'] !== T_CLOSE_CURLY_BRACKET
-                ) {
-                    $phpcsFile->fixer->addContent($prev, ';');
-                }
-
-                $phpcsFile->fixer->endChangeset();
+                $phpcsFile->fixer->replaceToken($last, '');
             }
 
             $phpcsFile->recordMetric($stackPtr, 'PHP closing tag at EOF', 'yes');
         } else {
             $phpcsFile->recordMetric($stackPtr, 'PHP closing tag at EOF', 'no');
-        }//end if
+        }
 
         // Ignore the rest of the file.
         return ($phpcsFile->numTokens + 1);

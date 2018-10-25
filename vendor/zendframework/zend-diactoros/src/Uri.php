@@ -291,7 +291,7 @@ class Uri implements UriInterface
         }
 
         $info = $this->filterUserInfoPart($user);
-        if (null !== $password) {
+        if ($password) {
             $info .= ':' . $this->filterUserInfoPart($password);
         }
 

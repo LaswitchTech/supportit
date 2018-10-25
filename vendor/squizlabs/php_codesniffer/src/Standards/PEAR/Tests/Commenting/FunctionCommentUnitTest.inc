@@ -157,7 +157,7 @@ class PHP_CodeSniffer_File
  *
  * @return void
  */
-function functionOutsideClass(&$str, &$foo)
+public function functionOutsideClass(&$str, &$foo)
 {
     return;
 }//end functionOutsideClass()
@@ -181,7 +181,7 @@ function tagBeforeComment()
  *
  *
  */
-function noReturnOutsideClass()
+public function noReturnOutsideClass()
 {
 
 }//end noReturnOutsideClass()
@@ -195,7 +195,7 @@ function noReturnOutsideClass()
  * @return void
  * @fine  Unknown tag
  */
-function missingTwoParamComment($one, $two, $three)
+public function missingTwoParamComment($one, $two, $three)
 {
 
 }//end missingTwoParamComment()
@@ -243,13 +243,13 @@ function myFunction($arg1) {}
  */
 function myFunction() {}
 
-abstract class MyClass {
+class MyClass() {
     /**
      * An abstract function.
      *
      * @return string[]
      */
-    abstract protected function myFunction();
+    abstract final protected function myFunction();
 }
 
 /**
@@ -261,7 +261,7 @@ abstract class MyClass {
  *
  * @return void
  */
-function foo(&$tokens, $tokenizer, $eolChar)
+public function foo(&$tokens, $tokenizer, $eolChar)
 {
 
 }//end foo()
@@ -270,7 +270,7 @@ function foo(&$tokens, $tokenizer, $eolChar)
  * Gettext.
  *
  */
-function _() {
+public function _() {
     return $foo;
 }
 
@@ -294,7 +294,7 @@ class Baz {
  *
  * @return void
  */
-function completeStep($status, array $array = [Class1::class, 'test'], $note = '') {
+public function completeStep($status, array $array = [Class1::class, 'test'], $note = '') {
     echo 'foo';
 }
 
@@ -306,7 +306,7 @@ function completeStep($status, array $array = [Class1::class, 'test'], $note = '
  *
  * @return void
  */
-function myFunction(string $name1, string ...$name2) {
+public function myFunction(string $name1, string ...$name2) {
 }
 
 
@@ -318,7 +318,7 @@ function myFunction(string $name1, string ...$name2) {
  *
  * @return void
  */
-function myFunction(string $name1, string ...$name2) {
+public function myFunction(string $name1, string ...$name2) {
 }
 
 /**

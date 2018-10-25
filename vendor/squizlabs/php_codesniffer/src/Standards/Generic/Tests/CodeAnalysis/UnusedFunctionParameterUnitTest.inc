@@ -34,7 +34,7 @@ function foo($bar)
 {
     print <<<BAZ
     $bar
-BAZ;
+BAZ
 }
 
 function foo( $parameter ) {
@@ -75,6 +75,6 @@ function bar($x)
     return 2 * ${x};
 }
 
-$foo = function ($a, $b) {
+function ($a, $b) {
     return $a * 2;
-};
+}

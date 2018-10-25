@@ -42,9 +42,8 @@ class UnnecessaryFinalModifierUnitTest extends AbstractSniffUnitTest
     {
         return [
             11 => 1,
-            12 => 1,
-            15 => 1,
-            18 => 1,
+            14 => 1,
+            17 => 1,
         ];
 
     }//end getWarningList()

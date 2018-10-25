@@ -44,13 +44,13 @@ easy:
 ```php
 use Cake\Datasource\ConnectionManager;
 
-ConnectionManager::config('connection-one', [
+ConnectionManager::config('master', [
     'className' => 'MyApp\Connections\CustomConnection',
     'param1' => 'value',
     'param2' => 'another value'
 ]);
 
-ConnectionManager::config('connection-two', [
+ConnectionManager::config('slave', [
     'className' => 'MyApp\Connections\CustomConnection',
     'param1' => 'different value',
     'param2' => 'another value'

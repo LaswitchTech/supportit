@@ -3,6 +3,7 @@
 
 namespace PHP_CodeSniffer\Tests\Core\File;
 
+\PHP_CodeSniffer\Tests\Core\File\testFECNClass
 interface testFIINInterface2 {}
 
 /* testInterface */
@@ -19,9 +20,3 @@ class testFIINNamespacedClass implements \PHP_CodeSniffer\Tests\Core\File\testFI
 
 /* testNonImplementedClass */
 class testFIINNonImplementedClass {}
-
-/* testClassThatExtendsAndImplements */
-class testFECNClassThatExtendsAndImplements extends testFECNClass implements InterfaceA, \NameSpaced\Cat\InterfaceB {}
-
-/* testClassThatImplementsAndExtends */
-class testFECNClassThatImplementsAndExtends implements \InterfaceA, InterfaceB extends testFECNClass {}

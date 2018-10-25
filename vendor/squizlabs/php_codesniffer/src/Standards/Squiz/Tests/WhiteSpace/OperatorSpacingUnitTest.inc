@@ -249,10 +249,3 @@ $a =
     'a',
     'b',
 ];
-
-$foo = is_array($bar) ? array_map(
-        function () {},
-        $bar
-    ) : $bar;
-
-function bar(): array {}

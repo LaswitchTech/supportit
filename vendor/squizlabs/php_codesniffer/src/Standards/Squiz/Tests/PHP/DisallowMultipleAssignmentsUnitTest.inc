@@ -56,9 +56,3 @@ $obj->$classVar = $prefix.'-'.$type;
 $closureWithDefaultParamter = function(array $testArray=array()) {};
 ?>
 <?php $var = false; ?>
-
-<?php
-
-while ( ( $csvdata = fgetcsv( $handle, 2000, $separator ) ) !== false ) {
-	// Do something.
-}

@@ -31,6 +31,7 @@
 <body class="hold-transition skin-<?php echo Configure::read('Theme.skin'); ?> sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
+        <?php if($loggedIn) : ?>
         <header class="main-header">
             <!-- Logo -->
             <a href="<?php echo $this->Url->build('/'); ?>" class="logo">
@@ -44,11 +45,12 @@
         </header>
 
         <!-- Left side column. contains the sidebar -->
-        <?php echo $this->element('aside-main-sidebar'); ?>
+            <?php echo $this->element('aside-main-sidebar'); ?>
 
         <!-- =============================================== -->
 
         <!-- Content Wrapper. Contains page content -->
+        <?php endif; ?>
         <div class="content-wrapper">
 
             <?php echo $this->Flash->render(); ?>
@@ -66,9 +68,9 @@
         <!-- /.control-sidebar -->
 <!-- Add the sidebar's background. This div must be placed
     immediately after the control sidebar -->
-    <div class="control-sidebar-bg"></div>
-</div>
-<!-- ./wrapper -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <!-- ./wrapper -->
 
 <!-- jQuery 2.2.3 -->
 <?php echo $this->Html->script('AdminLTE./plugins/jQuery/jquery-2.2.3.min'); ?>

@@ -371,17 +371,12 @@ class SqlserverSchema extends BaseSchema
         }
 
         if ($data['type'] === TableSchema::TYPE_BINARY) {
-            if (!isset($data['length'])
-                || in_array($data['length'], [TableSchema::LENGTH_MEDIUM, TableSchema::LENGTH_LONG], true)) {
-                $data['length'] = 'MAX';
-            }
+            $out .= ' VARBINARY';
 
-            if ($data['length'] === 1) {
-                $out .= ' BINARY(1)';
+            if ($data['length'] !== TableSchema::LENGTH_TINY) {
+                $out .= '(MAX)';
             } else {
-                $out .= ' VARBINARY';
-
-                $out .= sprintf('(%s)', $data['length']);
+                $out .= sprintf('(%s)', TableSchema::LENGTH_TINY);
             }
         }
 

@@ -1,10 +1,10 @@
 <?php
 class MyClass
 {
-    var $varName  = 'hello';
-    var $var_name = 'hello';
-    var $varname  = 'hello';
-    var $_varName = 'hello';
+    $varName  = 'hello';
+    $var_name = 'hello';
+    $varname  = 'hello';
+    $_varName = 'hello';
 
     public $varName  = 'hello';
     public $var_name = 'hello';
@@ -43,8 +43,8 @@ class MyClass
 if (true) {
     class MyClass
     {
-        var $varName  = 'hello';
-        var $var_name = 'hello';
+        $varName  = 'hello';
+        $var_name = 'hello';
     }
 }
 
