@@ -1,0 +1,645 @@
+#!/bin/bash
+#==============================================================================
+#TITLE:            supportit
+#DESCRIPTION:      This file contains supportit API
+#AUTHOR:           Louis Ouellet
+#DATE:             2018-10-24
+#VERSION:          1.1-0
+#USAGE:            ./supportit
+
+#==============================================================================
+# CUSTOM SETTINGS
+#==============================================================================
+
+# Initialize Timer
+SECOND=0
+
+#Install Directory
+MAINDIR=/usr/share/supportit
+
+#Log Directory
+LOGDIR=/var/log/supportit/
+
+# Script Personalisation
+scriptname="supportit"
+Title=""
+help_options="
+--colors                             => Enables Colors
+--debug                              => Enable Debug Mode
+                                        Input commands sent are stored in ${LOGDIR}${scriptname}.log
+"
+help_functions="
+--help                               => Displays the list of available commands
+--init                               => Initialize SupportIT
+                                        You must provide mysql credentials as argument
+--check-update                       => Check for available updates
+--install-update                     => Install latest updates
+--scheduler                          => Runs PHP Scheduler
+  Arguments:
+    -c                               => Creates a cron for the scheduler
+"
+
+# Date
+DATE=$(date +"%Y-%m-%d %H:%M:%S")
+
+# Debug Switch
+debug=false
+
+# Git
+GIT=(https://github.com/LaswitchTech/supportit master)
+
+#==============================================================================
+# METHODS
+#==============================================================================
+
+function Display_Help(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Display_Help ${NORM}" | tee -a $logfile
+    fi
+    echo -e "
+Usage: ./$scriptname [options] [functions]
+
+Options:
+$help_options
+Functions:
+$help_functions"
+}
+
+function Get_IP(){
+    Check_Package net-tools
+    ip a | grep glo | awk '{print $2}' | head -1 | cut -f1 -d/
+}
+
+function Get_Version(){
+    cat /etc/debian_version
+}
+
+function Get_Kernel(){
+    uname -srmo
+}
+
+function Enable_Debug(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Enable_Debug ${NORM}" | tee -a $logfile
+    fi
+    if [ $debug = "false" ];then
+        mkdir -p /var/log/
+        debug="true"
+        logfile="${LOGDIR}${scriptname}.log"
+        version=$(Get_Version)
+        kernel=$(Get_Kernel)
+        UptimeAll=$(uptime)
+        echo -e "${ORANGE}
+___________________________________________________________________________________
+
+    `date +"%A, %e %B %Y, %r"`
+___________________________________________________________________________________
+
+___________________________________________________________________________________
+
+    ${GREEN}
+    Version............:${NORM} $version${GREEN}
+    Kernel.............:${NORM} $kernel${GREEN}
+    Hostname...........:${NORM} $HOSTNAME${GREEN}
+    Username...........:${NORM} $(whoami)${GREEN}
+    Uptime.............:${NORM} $(echo $UptimeAll | awk '{ print $3 }' | sed -e "s/,//g")${GREEN}
+    Memory.............:${NORM} `cat /proc/meminfo | grep MemFree | awk {'print $2'}`kB (Free) / `cat /proc/meminfo | grep MemTotal | awk {'print $2'}`kB (Total)${GREEN}
+    Load Averages......:${NORM} $(echo $UptimeAll | awk '{ print $8 }' | sed -e "s/,//g"), $(echo $UptimeAll | awk '{ print $9 }' | sed -e "s/,//g"), $(echo $UptimeAll | awk '{ print $10 }' | sed -e "s/,//g") (1, 5, 15 min)${GREEN}
+    Running Processes..:${NORM} `ps ax | wc -l | tr -d " "`${GREEN}
+    IP Addresses.......:${NORM} `ip a | grep glo | awk '{print $2}' | head -1 | cut -f1 -d/` and `wget -q -O - http://icanhazip.com/ | tail`${GREEN}
+    Log File...........:${NORM} $logfile${ORANGE}
+
+___________________________________________________________________________________
+${NORM}" | tee $logfile
+    fi
+}
+
+function Executing(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][EXECUTING] $1 ${NORM}" | tee -a $logfile
+    fi
+    if [ $debug = "true" ]; then
+        if eval $1;then
+            echo -e "${GREEN}[DEBUG  ][$(date)][SUCCESS][EXECUTING] $1 ${NORM}" | tee -a $logfile
+        else
+            echo -e "${RED}[DEBUG  ][$(date)][ERROR  ][EXECUTING] $1 ${NORM}" | tee -a $logfile
+        fi
+    else
+        eval $1
+    fi
+}
+
+function Check_Package(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Check_Package $1 ${NORM}" | tee -a $logfile
+    fi
+    if [ $(dpkg-query -W -f='${Status}' $1 2>/dev/null | grep -c "ok installed") -eq 0 ];
+    then
+        Command="apt-get install $1 -y"; Executing "$Command"
+    fi
+}
+
+function Run_Query(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Run_Query ${NORM}" | tee -a $logfile
+    fi
+    SQL_Query="$1"
+    Command="mysql -u ${COSQL[0]} -p${COSQL[1]} -D supportit -e \"${SQL_Query}\""; Executing "$Command"
+}
+
+
+function Run_DB_Query(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Run_Query ${NORM}" | tee -a $logfile
+    fi
+    SQL_Query="$1"
+    Command="mysql -u ${COSQL[0]} -p${COSQL[1]} -e \"${SQL_Query}\""; Executing "$Command"
+}
+
+function Get_Query(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Get_Query ${NORM}" | tee -a $logfile
+    fi
+    SQL_Query="$1"
+    RESULT=$(mysql -u ${COSQL[0]} -p${COSQL[1]} -D supportit -e "${SQL_Query}")
+}
+
+function Update(){
+    FROM=$(pwd)
+    Command="cd $MAINDIR"; Executing "$Command"
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Update ${NORM}" | tee -a $logfile
+        Command="git reset --hard | tee -a $logfile"; Executing "$Command"
+        Command="git pull ${GIT[0]} ${GIT[1]} | tee -a $logfile"; Executing "$Command"
+    else
+        Command="git reset --hard"; Executing "$Command"
+        Command="git pull ${GIT[0]} ${GIT[1]}"; Executing "$Command"
+    fi
+    Fix_Permission
+    Command="cd $FROM"; Executing "$Command"
+}
+
+function CheckUpdate(){
+    FROM=$(pwd)
+    Command="cd $MAINDIR"; Executing "$Command"
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] CheckUpdate ${NORM}" | tee -a $logfile
+    fi
+    var=$(git status -uno | egrep -i "origin/master")
+    if [ "$var" ]; then
+        if [ $debug = "true" ]; then
+            echo Up-to-Date | tee -a $logfile
+        else
+            echo Up-to-Date
+        fi
+    else
+        if [ $debug = "true" ]; then
+            echo "Update Available" | tee -a $logfile
+        else
+            echo "Update Available"
+        fi
+    fi
+    Command="cd $FROM"; Executing "$Command"
+}
+
+function Fix_Permission(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Fix_Permission ${NORM}" | tee -a $logfile
+    fi
+    chown -R www-data:www-data $MAINDIR
+    chmod -R 775 $MAINDIR
+    Command="mkdir -p $LOGDIR"; Executing "$Command"
+    chown -R www-data:www-data $LOGDIR
+    chmod -R 775 $LOGDIR
+}
+
+function Create_ConfigFiles(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Create_ConfigFiles ${NORM}" | tee -a $logfile
+    fi
+	sed -i "s/\"Password\" => \"\",/\"Password\" => \"$SQL_Password\"/g" /usr/share/supportit/config.php
+}
+
+function Init(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Install_Requirement ${NORM}" | tee -a $logfile
+    fi
+    LINE="www-data ALL=(ALL) NOPASSWD: ALL"
+    echo "$LINE" | tee -a /etc/sudoers
+    usermod -aG sudo www-data
+    SQL_Password=$(pwgen -s 13 1)
+    ADMIN_Pass=$(pwgen -s 13 1)
+    mysql_secure_installation << EOF
+
+y
+$SQL_Password
+$SQL_Password
+y
+y
+y
+y
+EOF
+    cat << EOF > /etc/apache2/sites-available/supportit.conf
+<VirtualHost *:80>
+  DocumentRoot $MAINDIR
+  #ServerName supportit
+  <Directory $MAINDIR>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride All
+    Order allow,deny
+    allow from all
+  </Directory>
+</VirtualHost>
+EOF
+    Command="a2enmod rewrite"; Executing "$Command"
+    Command="a2ensite supportit"; Executing "$Command"
+    Command="systemctl restart apache2"; Executing "$Command"
+    Create_SQL_DB
+    Create_SQL_TBL
+    Create_SQL_ENTRY
+    Create_ConfigFiles
+    Fix_Permission
+    if [ $debug = "true" ]; then
+        echo "
+_____________________________________________________________________
+
+   Installation Completed
+_____________________________________________________________________
+_____________________________________________________________________
+
+   SQL Settings
+        Username: root
+        Password: $SQL_Password
+_____________________________________________________________________
+_____________________________________________________________________
+
+    Visite http://$(ip a | grep glo | awk '{print $2}' | head -1 | cut -f1 -d/):12321/
+    Admin Login:
+        Username: admin@supportit.com
+        Password: $ADMIN_Pass
+_____________________________________________________________________
+" | tee -a $logfile
+    else
+        echo "
+_____________________________________________________________________
+
+   Installation Completed
+_____________________________________________________________________
+_____________________________________________________________________
+
+   SQL Settings
+        Username: root
+        Password: $SQL_Password
+_____________________________________________________________________
+_____________________________________________________________________
+
+    Visite http://$(ip a | grep glo | awk '{print $2}' | head -1 | cut -f1 -d/):12321/
+    Admin Login:
+        Username: admin@supportit.com
+        Password: $ADMIN_Pass
+_____________________________________________________________________
+"
+    fi
+}
+
+function Create_SQL_DB(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Create_SQL_DB ${NORM}" | tee -a $logfile
+    fi
+    SQL="CREATE DATABASE supportit"
+    Run_DB_Query "${SQL}"
+    SQL="GRANT ALL PRIVILEGES ON *.* TO 'supportit'@'localhost' IDENTIFIED BY '${SQL_Password}';"
+    Run_DB_Query "${SQL}"
+}
+
+function Create_SQL_TBL(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Create_SQL_TBL ${NORM}" | tee -a $logfile
+    fi
+    SQL="CREATE TABLE logs (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        user_id INT NOT NULL ,
+        type INT(1) NOT NULL ,
+        tbl VARCHAR(255) NOT NULL ,
+        content TEXT NOT NULL ,
+        log_file VARCHAR(255) NOT NULL ,
+        ipv4 VARCHAR(15) NOT NULL ,
+        is_success TINYINT(1) NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "${SQL}"
+    SQL="CREATE TABLE roles (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        name VARCHAR(255) NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "${SQL}"
+    SQL="CREATE TABLE permissions (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        role_id INT NOT NULL ,
+        name VARCHAR(255) NOT NULL ,
+        level INT(1) NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "${SQL}"
+    SQL="CREATE TABLE users (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        role_id INT NOT NULL ,
+        status INT(1) NOT NULL ,
+        first_name VARCHAR(255) NOT NULL ,
+        last_name VARCHAR(255) NOT NULL ,
+        email VARCHAR(255) NOT NULL ,
+        password VARCHAR(255) NOT NULL ,
+        auth_key VARCHAR(255) NOT NULL ,
+        account_id INT NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE alerts (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        sender INT NOT NULL ,
+        receiver INT NOT NULL ,
+        subject VARCHAR(255) NOT NULL ,
+        message TEXT NOT NULL ,
+        is_read TINYINT(1) NOT NULL ,
+        type VARCHAR(255) NOT NULL ,
+        icon VARCHAR(255) NOT NULL ,
+        controller VARCHAR(255) NOT NULL ,
+        links_to VARCHAR(255) NOT NULL ,
+        action VARCHAR(255) NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE messages (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        sender INT NOT NULL ,
+        receiver INT NOT NULL ,
+        subject VARCHAR(255) NOT NULL ,
+        message TEXT NOT NULL ,
+        is_read TINYINT(1) NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE cases (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        account_id INT NOT NULL ,
+        state INT NOT NULL ,
+        status INT NOT NULL ,
+        priority INT NOT NULL ,
+        type INT NOT NULL ,
+        subject VARCHAR(255) NOT NULL ,
+        description TEXT NOT NULL ,
+        resolution TEXT NOT NULL ,
+        user_id INT NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE notes (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        link_id INT NOT NULL ,
+        link_type INT NOT NULL ,
+        subject VARCHAR(255) NOT NULL ,
+        content TEXT NOT NULL ,
+        type INT NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE accounts (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        name VARCHAR(255) NOT NULL ,
+        phone VARCHAR(255) NOT NULL ,
+        website VARCHAR(255) NOT NULL ,
+        status VARCHAR(255) NOT NULL ,
+        description TEXT NOT NULL ,
+        user_id INT NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE addresses (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        name VARCHAR(255) NOT NULL ,
+        phone VARCHAR(255) NOT NULL ,
+        street VARCHAR(255) NOT NULL ,
+        city VARCHAR(255) NOT NULL ,
+        zipcode VARCHAR(255) NOT NULL ,
+        state VARCHAR(255) NOT NULL ,
+        country VARCHAR(255) NOT NULL ,
+        link_id INT NOT NULL ,
+        link_type INT NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE contacts (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        first_name VARCHAR(255) NOT NULL ,
+        last_name VARCHAR(255) NOT NULL ,
+        phone1 VARCHAR(255) NOT NULL ,
+        ext1 VARCHAR(255) NOT NULL ,
+        phone2 VARCHAR(255) NOT NULL ,
+        ext2 VARCHAR(255) NOT NULL ,
+        phone3 VARCHAR(255) NOT NULL ,
+        ext3 VARCHAR(255) NOT NULL ,
+        is_allowed_calls VARCHAR(255) NOT NULL ,
+        email VARCHAR(255) NOT NULL ,
+        title VARCHAR(255) NOT NULL ,
+        department VARCHAR(255) NOT NULL ,
+        description TEXT NOT NULL ,
+        account_id INT NOT NULL ,
+        user_id INT NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE calls (
+        id INT NOT NULL AUTO_INCREMENT ,
+        owner INT NOT NULL ,
+        created DATETIME NOT NULL ,
+        modified DATETIME NOT NULL ,
+        subject VARCHAR(255) NOT NULL ,
+        content TEXT NOT NULL ,
+        status INT NOT NULL ,
+        start DATETIME NOT NULL ,
+        end DATETIME NOT NULL ,
+        link_id INT NOT NULL ,
+        link_type INT NOT NULL ,
+        duration VARCHAR(255) NOT NULL ,
+        user_id INT NOT NULL ,
+        PRIMARY KEY (id)
+        );"
+    Run_Query "$SQL"
+    SQL="CREATE TABLE sessions (
+        id CHAR(40) NOT NULL ,
+        created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+        modified DATETIME on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+        data BLOB NULL DEFAULT NULL ,
+        expires INT UNSIGNED NULL DEFAULT NULL ,
+        PRIMARY KEY (id)
+        )
+        ENGINE = InnoDB
+        CHARSET=ascii
+        COLLATE ascii_bin;"
+    Run_Query "$SQL"
+}
+
+function Create_SQL_ENTRY(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Create_SQL_ENTRY ${NORM}" | tee -a $logfile
+    fi
+    SQL="INSERT INTO roles (owner, created, modified, name) VALUES ( 1, '${DATE}', '${DATE}', 'System');"
+    Run_Query "$SQL"
+    SQL="INSERT INTO roles (owner, created, modified, name) VALUES ( 1, '${DATE}', '${DATE}', 'Administrators');"
+    Run_Query "$SQL"
+    SQL="INSERT INTO roles (owner, created, modified, name) VALUES ( 1, '${DATE}', '${DATE}', 'Users');"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 1, 'setLogs', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 1, 'setRoles', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 1, 'setPermissions', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 1, 'setUsers', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 1, 'setMessages', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 1, 'setAlerts', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 1, 'setSettings', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 2, 'setLogs', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 2, 'setRoles', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 2, 'setPermissions', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 2, 'setUsers', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 2, 'setMessages', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 2, 'setAlerts', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 2, 'setSettings', 4);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 3, 'setLogs', 0);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 3, 'setRoles', 0);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 3, 'setPermissions', 0);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 3, 'setUsers', 0);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 3, 'setMessages', 1);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 3, 'setAlerts', 1);"
+    Run_Query "$SQL"
+    SQL="INSERT INTO permissions (owner, created, modified, role_id, name, level) VALUES ( 1, '${DATE}', '${DATE}', 3, 'setSettings', 1);"
+    Run_Query "$SQL"
+    Admin_Email="system@supportit.com"
+    Admin_Password=""
+    Admin_Auth_Key=""
+    SQL="INSERT INTO users (owner, created, modified, role_id, status, first_name, last_name, email, password, auth_key) VALUES ( 1, '${DATE}', '${DATE}', 1, 0, 'System', 'Operation', '${Admin_Email}', '${Admin_Password}', '${Admin_Auth_Key}');"
+    Run_Query "$SQL"
+    Admin_Email="admin@supportit.com"
+    Admin_Password=$( echo $(htpasswd -bnBC 10 "" $ADMIN_Pass | tr -d ':\n') | sed -e 's/\$/\\$/g')
+    Admin_Auth_Key=""
+    SQL="INSERT INTO users (owner, created, modified, role_id, status, first_name, last_name, email, password, auth_key) VALUES ( 1, '${DATE}', '${DATE}', 2, 0, 'System', 'Administrator', '${Admin_Email}', '${Admin_Password}', '${Admin_Auth_Key}');"
+    Run_Query "$SQL"
+}
+
+#==============================================================================
+# RUN OPTIONS & FUNCTIONS
+#==============================================================================
+
+#Execute Help if no parameters have been provided
+if [ $# -eq 0 ]; then Display_Help; fi
+
+#Execute Options
+CMDFunctions="$@"
+while test $# -gt 0
+do
+    case "$1" in
+        --init)
+            if [ "$2" != --* ] && [ "$3" != --* ] && [ "$2" != "" ] && [ "$3" != "" ]; then
+              COSQL=($2 $3)
+              Init
+            fi
+            ;;
+        --check-update)
+            CheckUpdate
+            ;;
+        --install-update)
+            Update
+            ;;
+        --scheduler)
+            Scheduler
+            ;;
+        --debug)
+            Enable_Debug
+            ;;
+        --colors)
+            BLACK="\033[30m"
+            RED="\033[31m"
+            GREEN="\033[32m"
+            ORANGE="\033[33m"
+            BLUE="\033[34m"
+            PURPLE="\033[35m"
+            CYAN="\033[36m"
+            LIGHTGRAY="\033[37m"
+            NORM="\033[00m"
+            BOLD="\033[1m"
+            ;;
+        --help)
+            Display_Help
+            ;;
+        --*)
+            echo -e ""
+            echo -e "${BOLD}${RED}Bad [argument] ${NORM}$1 ${NORM}"
+            Display_Help
+            exit
+            ;;
+    esac
+    shift
+done
+
+#==============================================================================
+# RUN SCRIPT
+#==============================================================================
+
+if [ $debug = "true" ]; then
+    duration=$SECONDS
+    echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed." | tee -a $logfile
+    cat $logfile | grep "[ERROR  ]"
+fi
+
+exit 0
