@@ -1,4 +1,5 @@
 <?php
+include '../config.php';
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -197,3 +198,18 @@ Type::build('timestamp')
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
 //Inflector::rules('transliteration', ['/å/' => 'aa']);
+Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
+Configure::write('Theme', [
+    'title' => $SITE['title'],
+    'logo' => [
+        'mini' => $SITE['logo']['mini'],
+        'large' => $SITE['logo']['large']
+    ],
+    'login' => [
+        'show_remember' => $SITE['login']['show_remember'],
+        'show_register' => $SITE['login']['show_register'],
+        'show_social' => $SITE['login']['show_social']
+    ],
+    'folder' => ROOT,
+    'skin' => $SITE['skin']
+]);

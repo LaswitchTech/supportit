@@ -1,4 +1,5 @@
 <?php
+include '../config.php';
 return [
     /**
      * Debug Level:
@@ -68,7 +69,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '6e238cdb7fa28211f92c4cdaebbbe1ceb3982e8bb99db23866f0bb259247e5e1'),
+        'salt' => env('SECURITY_SALT', '954da6ba5e227ecfe70e4ef409328d18b9bf2fbbee50071b0f059c96508f317d'),
     ],
 
     /**
@@ -243,21 +244,22 @@ return [
      *   E.g set it to 'utf8mb4' in MariaDB and MySQL and 'utf8' for any
      *   other RDBMS.
      */
+
     'Datasources' => [
         'default' => [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-            'host' => 'localhost',
+            'host' => $DB_CONNECT['Host'],
             /*
              * CakePHP will use the default DB port based on the driver selected
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'my_app',
+            'username' => $DB_CONNECT['Username'],
+            'password' => $DB_CONNECT['Password'],
+            'database' => $DB_CONNECT['Database'],
             /*
              * You do not need to set this flag to use full utf-8 encoding (internal default since CakePHP 3.6).
              */
@@ -298,9 +300,9 @@ return [
             'persistent' => false,
             'host' => 'localhost',
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'test_myapp',
+            'username' => 'louis',
+            'password' => 'Raphy0610+-',
+            'database' => 'SeeIT',
             //'encoding' => 'utf8mb4',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
@@ -381,6 +383,6 @@ return [
      * To use database sessions, load the SQL file located at config/schema/sessions.sql
      */
     'Session' => [
-        'defaults' => 'php',
+        'defaults' => 'database',
     ],
 ];

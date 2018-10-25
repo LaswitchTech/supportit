@@ -107,6 +107,7 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
             'App\\Test\\' => 9,
             'App\\' => 4,
             'Ajgl\\Twig\\Extension\\' => 20,
+            'AdminLTE\\' => 9,
         ),
     );
 
@@ -286,6 +287,10 @@ class ComposerStaticInit14ce9296233480f32c1491f638660c43
         'Ajgl\\Twig\\Extension\\' => 
         array (
             0 => __DIR__ . '/..' . '/ajgl/breakpoint-twig-extension/src',
+        ),
+        'AdminLTE\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maiconpinto/cakephp-adminlte-theme/src',
         ),
     );
 
