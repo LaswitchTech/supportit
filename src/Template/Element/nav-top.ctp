@@ -120,31 +120,6 @@
           </li>
         </ul>
       </li>
-      <!-- Tasks: style can be found in dropdown.less -->
-      <li class="dropdown tasks-menu">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          <i class="fa fa-flag-o"></i>
-            <?php if ( $this->Task->getTaskscount() >= 1 ) : ?>
-                <span class="label label-danger"><?= $this->Task->getTaskscount() ?></span>
-            <?php endif; ?>
-        </a>
-        <ul class="dropdown-menu">
-          <li class="header">You have <?= $this->Task->getTaskscount() ?> tasks</li>
-          <li>
-            <!-- inner menu: contains the actual data -->
-            <ul class="menu">
-              <?php foreach ($this->Task->getTasks() as $task): ?>
-                <li>
-                  <?= $this->Html->link($this->Html->tag('i', '', array('class' => 'fa fa-server', 'style' => 'padding-right: 5px;')).$this->Format->getName($task->device_id, 'devices').'<br /><span style="color: #000;">'.$task->description.'<br /><small class="pull-right">'.$task->created.'</small><br /></span>', array('controller' => 'Devices', 'action' => 'view', $task->device_id), array('escape' => false, 'class'=>'')) ?>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          </li>
-          <li class="footer">
-            <?= $this->Html->link('View all tasks', array('controller' => 'Tasks', 'action' => 'index'), array('escape' => false)) ?>
-          </li>
-        </ul>
-      </li>
       <!-- User Account: style can be found in dropdown.less -->
       <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
