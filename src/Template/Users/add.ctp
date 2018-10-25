@@ -33,6 +33,7 @@
             echo $this->Form->input('email');
             echo $this->Form->input('password');
             echo $this->Form->input('auth_key');
+            echo $this->Form->input('account_id');
           ?>
           </div>
           <!-- /.box-body -->

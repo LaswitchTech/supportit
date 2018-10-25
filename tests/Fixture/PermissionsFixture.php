@@ -45,8 +45,8 @@ class PermissionsFixture extends TestFixture
             [
                 'id' => 1,
                 'owner' => 1,
-                'created' => '2018-09-03 23:39:14',
-                'modified' => '2018-09-03 23:39:14',
+                'created' => '2018-10-25 16:05:51',
+                'modified' => '2018-10-25 16:05:51',
                 'role_id' => 1,
                 'name' => 'Lorem ipsum dolor sit amet',
                 'level' => 1

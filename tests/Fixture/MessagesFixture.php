@@ -47,8 +47,8 @@ class MessagesFixture extends TestFixture
             [
                 'id' => 1,
                 'owner' => 1,
-                'created' => '2018-09-03 23:39:14',
-                'modified' => '2018-09-03 23:39:14',
+                'created' => '2018-10-25 16:06:16',
+                'modified' => '2018-10-25 16:06:16',
                 'sender' => 1,
                 'receiver' => 1,
                 'subject' => 'Lorem ipsum dolor sit amet',

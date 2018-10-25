@@ -10,6 +10,11 @@ use Cake\Validation\Validator;
  * Users Model
  *
  * @property \App\Model\Table\RolesTable|\Cake\ORM\Association\BelongsTo $Roles
+ * @property |\Cake\ORM\Association\BelongsTo $Accounts
+ * @property |\Cake\ORM\Association\HasMany $Accounts
+ * @property |\Cake\ORM\Association\HasMany $Calls
+ * @property |\Cake\ORM\Association\HasMany $Cases
+ * @property |\Cake\ORM\Association\HasMany $Contacts
  * @property \App\Model\Table\LogsTable|\Cake\ORM\Association\HasMany $Logs
  *
  * @method \App\Model\Entity\User get($primaryKey, $options = [])
@@ -45,6 +50,22 @@ class UsersTable extends Table
         $this->belongsTo('Roles', [
             'foreignKey' => 'role_id',
             'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Accounts', [
+            'foreignKey' => 'account_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->hasMany('Accounts', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('Calls', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('Cases', [
+            'foreignKey' => 'user_id'
+        ]);
+        $this->hasMany('Contacts', [
+            'foreignKey' => 'user_id'
         ]);
         $this->hasMany('Logs', [
             'foreignKey' => 'user_id'
@@ -116,6 +137,7 @@ class UsersTable extends Table
     {
         $rules->add($rules->isUnique(['email']));
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
+        $rules->add($rules->existsIn(['account_id'], 'Accounts'));
 
         return $rules;
     }

@@ -49,8 +49,8 @@ class LogsFixture extends TestFixture
             [
                 'id' => 1,
                 'owner' => 1,
-                'created' => '2018-09-03 23:39:14',
-                'modified' => '2018-09-03 23:39:14',
+                'created' => '2018-10-25 16:07:10',
+                'modified' => '2018-10-25 16:07:10',
                 'user_id' => 1,
                 'type' => 1,
                 'tbl' => 'Lorem ipsum dolor sit amet',

@@ -51,6 +51,10 @@
                                 <dd>
                                     <?= $this->Number->format($user->status) ?>
                                 </dd>
+                                                                                                                <dt><?= __('Account Id') ?></dt>
+                                <dd>
+                                    <?= $this->Number->format($user->account_id) ?>
+                                </dd>
                                                                                                 
                                                                                                                                                                                                 
                                             

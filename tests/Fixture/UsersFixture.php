@@ -28,6 +28,7 @@ class UsersFixture extends TestFixture
         'email' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'password' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'auth_key' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'account_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -49,15 +50,16 @@ class UsersFixture extends TestFixture
             [
                 'id' => 1,
                 'owner' => 1,
-                'created' => '2018-10-25 02:31:15',
-                'modified' => '2018-10-25 02:31:15',
+                'created' => '2018-10-25 16:04:46',
+                'modified' => '2018-10-25 16:04:46',
                 'role_id' => 1,
                 'status' => 1,
                 'first_name' => 'Lorem ipsum dolor sit amet',
                 'last_name' => 'Lorem ipsum dolor sit amet',
                 'email' => 'Lorem ipsum dolor sit amet',
                 'password' => 'Lorem ipsum dolor sit amet',
-                'auth_key' => 'Lorem ipsum dolor sit amet'
+                'auth_key' => 'Lorem ipsum dolor sit amet',
+                'account_id' => 1
             ],
         ];
         parent::init();

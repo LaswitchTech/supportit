@@ -17,6 +17,7 @@ use Cake\ORM\Entity;
  * @property string $email
  * @property string $password
  * @property string $auth_key
+ * @property int $account_id
  *
  * @property \App\Model\Entity\Role $role
  * @property \App\Model\Entity\Log[] $logs
@@ -44,6 +45,7 @@ class User extends Entity
         'email' => true,
         'password' => true,
         'auth_key' => true,
+        'account_id' => true,
         'role' => true,
         'logs' => true
     ];
