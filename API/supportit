@@ -577,6 +577,13 @@ function Create_SQL_ENTRY(){
     Run_Query "$SQL"
 }
 
+function Scheduler(){
+    if [ $debug = "true" ]; then
+        echo -e "${CYAN}[DEBUG  ][$(date)][INFO   ][STARTING ] Scheduler ${NORM}" | tee -a $logfile
+    fi
+    Command="php ${MAINDIR}/bin/scheduler.php"; Executing "$Command"
+}
+
 #==============================================================================
 # RUN OPTIONS & FUNCTIONS
 #==============================================================================
