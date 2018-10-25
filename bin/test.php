@@ -1,5 +1,5 @@
 <?php
-  include "/usr/share/supportit/bin/test.php";
+  include "/usr/share/supportit/config.php";
   echo "##########################################################";
   echo $SITE['title'];
   echo "##########################################################";
