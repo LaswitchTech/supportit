@@ -9,6 +9,7 @@ use Cake\Validation\Validator;
 /**
  * Notes Model
  *
+ * @property |\Cake\ORM\Association\BelongsTo $Emails
  * @property \App\Model\Table\LinksTable|\Cake\ORM\Association\BelongsTo $Links
  *
  * @method \App\Model\Entity\Note get($primaryKey, $options = [])
@@ -41,6 +42,10 @@ class NotesTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Emails', [
+            'foreignKey' => 'email_id',
+            'joinType' => 'INNER'
+        ]);
         $this->belongsTo('Links', [
             'foreignKey' => 'link_id',
             'joinType' => 'INNER'
@@ -97,6 +102,7 @@ class NotesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->existsIn(['email_id'], 'Emails'));
         $rules->add($rules->existsIn(['link_id'], 'Links'));
 
         return $rules;

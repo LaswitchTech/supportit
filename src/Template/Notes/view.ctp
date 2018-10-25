@@ -21,7 +21,11 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <dl class="dl-horizontal">
-                                                                                                                <dt><?= __('Subject') ?></dt>
+                                                                                                                <dt><?= __('Email Id') ?></dt>
+                                        <dd>
+                                            <?= h($note->email_id) ?>
+                                        </dd>
+                                                                                                                                                            <dt><?= __('Subject') ?></dt>
                                         <dd>
                                             <?= h($note->subject) ?>
                                         </dd>

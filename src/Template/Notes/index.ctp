@@ -31,9 +31,9 @@
               <tr>
                 <th><?= $this->Paginator->sort('id') ?></th>
                 <th><?= $this->Paginator->sort('owner') ?></th>
+                <th><?= $this->Paginator->sort('email_id') ?></th>
                 <th><?= $this->Paginator->sort('link_id') ?></th>
                 <th><?= $this->Paginator->sort('link_type') ?></th>
-                <th><?= $this->Paginator->sort('subject') ?></th>
                 <th><?= __('Actions') ?></th>
               </tr>
             </thead>
@@ -42,9 +42,9 @@
               <tr>
                 <td><?= $this->Number->format($note->id) ?></td>
                 <td><?= $this->Number->format($note->owner) ?></td>
+                <td><?= h($note->email_id) ?></td>
                 <td><?= $this->Number->format($note->link_id) ?></td>
                 <td><?= $this->Number->format($note->link_type) ?></td>
-                <td><?= h($note->subject) ?></td>
                 <td class="actions" style="white-space:nowrap">
                   <?= $this->Html->link(__('View'), ['action' => 'view', $note->id], ['class'=>'btn btn-info btn-xs']) ?>
                   <?= $this->Html->link(__('Edit'), ['action' => 'edit', $note->id], ['class'=>'btn btn-warning btn-xs']) ?>

@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  * @property int $owner
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
+ * @property string $email_id
  * @property int $link_id
  * @property int $link_type
  * @property string $subject
@@ -34,6 +35,7 @@ class Note extends Entity
         'owner' => true,
         'created' => true,
         'modified' => true,
+        'email_id' => true,
         'link_id' => true,
         'link_type' => true,
         'subject' => true,

@@ -14,11 +14,32 @@
   }
 
   // Fetch an overview for all messages in Folder
-  $result = imap_fetch_overview($mbox,"1:{$MC->Nmsgs}",0);
-  foreach ($result as $email) {
-    if ( $email->subject == "New Message From LaswitchTech" ){
-      if ( $email->from == "LaswitchTech <info@laswitchtech.com>" ){
-        
+  $mail_result = imap_fetch_overview($mbox,"1:{$MC->Nmsgs}",0);
+
+  // Generate Tickets
+  foreach ($mail_result as $email) {
+
+    // Get Email Info
+    $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
+    $tag = substr($mail_body, strpos($mail_body, '[email]')+7);
+    $mail_address = substr($tag, 0, strpos($tag, '[\email]'));
+    $tag = substr($mail_body, strpos($mail_body, '[subject]')+9);
+    $mail_subjet = substr($tag, 0, strpos($tag, '[\subject]'));
+    $tag = substr($mail_body, strpos($mail_body, '[description]')+13);
+    $mail_description = substr($tag, 0, strpos($tag, '[\description]'));
+
+    // Fetch Contact
+    $sql = "SELECT * FROM contacts WHERE email=".$mail_address;
+    $contact_result = $conn->query($sql);
+
+    // Verify Existence of User and Verify Mail Issuer
+    if ($contact_result->num_rows > 0){
+      if ( $email->subject == "New Message From LaswitchTech" ){
+        if ( $email->from == "LaswitchTech <info@laswitchtech.com>" ){
+          if ( $email->seen == 0 ){
+
+          }
+        }
       }
     }
   }
@@ -28,6 +49,15 @@
   $conn->close();
 ?>
 <?php
+
+  if ($result->num_rows > 0) {
+      // output data of each row
+      while($row = $result->fetch_assoc()) {
+          echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["lastname"]. "<br>";
+      }
+  } else {
+      echo "0 results";
+  }
 
 
   $sql = "INSERT INTO tickets (firstname, lastname, email)

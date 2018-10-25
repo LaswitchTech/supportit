@@ -421,6 +421,7 @@ function Create_SQL_TBL(){
         owner INT NOT NULL ,
         created DATETIME NOT NULL ,
         modified DATETIME NOT NULL ,
+        email_id VARCHAR(255) NOT NULL ,
         link_id INT NOT NULL ,
         link_type INT NOT NULL ,
         subject VARCHAR(255) NOT NULL ,

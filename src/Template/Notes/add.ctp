@@ -26,6 +26,7 @@
           <div class="box-body">
           <?php
             echo $this->Form->input('owner');
+            echo $this->Form->input('email_id');
             echo $this->Form->input('link_id');
             echo $this->Form->input('link_type');
             echo $this->Form->input('subject');
