@@ -21,29 +21,13 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <dl class="dl-horizontal">
-                                                                                                                <dt><?= __('Subject') ?></dt>
+                                                                                                        <dt><?= __('User') ?></dt>
+                                <dd>
+                                    <?= $alert->has('user') ? $alert->user->id : '' ?>
+                                </dd>
+                                                                                                                        <dt><?= __('Subject') ?></dt>
                                         <dd>
                                             <?= h($alert->subject) ?>
-                                        </dd>
-                                                                                                                                                            <dt><?= __('Type') ?></dt>
-                                        <dd>
-                                            <?= h($alert->type) ?>
-                                        </dd>
-                                                                                                                                                            <dt><?= __('Icon') ?></dt>
-                                        <dd>
-                                            <?= h($alert->icon) ?>
-                                        </dd>
-                                                                                                                                                            <dt><?= __('Controller') ?></dt>
-                                        <dd>
-                                            <?= h($alert->controller) ?>
-                                        </dd>
-                                                                                                                                                            <dt><?= __('Links To') ?></dt>
-                                        <dd>
-                                            <?= h($alert->links_to) ?>
-                                        </dd>
-                                                                                                                                                            <dt><?= __('Action') ?></dt>
-                                        <dd>
-                                            <?= h($alert->action) ?>
                                         </dd>
                                                                                                                                     
                                             
@@ -61,11 +45,7 @@
                                 </dd>
                                                                                                 
                                                                                                                                                                                                 
-                                                                        <dt><?= __('Is Read') ?></dt>
-                            <dd>
-                            <?= $alert->is_read ? __('Yes') : __('No'); ?>
-                            </dd>
-                                                                    
+                                            
                                                                         <dt><?= __('Message') ?></dt>
                             <dd>
                             <?= $this->Text->autoParagraph(h($alert->message)); ?>

@@ -26,16 +26,11 @@
           <div class="box-body">
           <?php
             echo $this->Form->input('owner');
+            echo $this->Form->input('user_id', ['options' => $users]);
             echo $this->Form->input('sender');
             echo $this->Form->input('receiver');
             echo $this->Form->input('subject');
             echo $this->Form->input('message');
-            echo $this->Form->input('is_read');
-            echo $this->Form->input('type');
-            echo $this->Form->input('icon');
-            echo $this->Form->input('controller');
-            echo $this->Form->input('links_to');
-            echo $this->Form->input('action');
           ?>
           </div>
           <!-- /.box-body -->

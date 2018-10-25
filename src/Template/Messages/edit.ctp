@@ -30,7 +30,6 @@
             echo $this->Form->input('receiver');
             echo $this->Form->input('subject');
             echo $this->Form->input('message');
-            echo $this->Form->input('is_read');
           ?>
           </div>
           <!-- /.box-body -->

@@ -195,11 +195,6 @@
                                     </th>
                                         
                                                                     
-                                    <th>
-                                    Account Id
-                                    </th>
-                                        
-                                                                    
                                 <th>
                                     <?php echo __('Actions'); ?>
                                 </th>
@@ -242,10 +237,6 @@
                                                                         
                                     <td>
                                     <?= h($users->auth_key) ?>
-                                    </td>
-                                                                        
-                                    <td>
-                                    <?= h($users->account_id) ?>
                                     </td>
                                     
                                                                         <td class="actions">

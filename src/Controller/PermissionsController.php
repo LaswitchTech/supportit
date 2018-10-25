@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Permissions Controller
@@ -20,8 +21,10 @@ class PermissionsController extends AppController
      */
     public function index()
     {
+        $total = TableRegistry::get('Permissions')->find()->count();
         $this->paginate = [
-            'contain' => ['Roles']
+            'contain' => ['Roles'],
+            'limit' => $total
         ];
         $permissions = $this->paginate($this->Permissions);
 

@@ -41,11 +41,7 @@
                                 </dd>
                                                                                                 
                                                                                                                                                                                                 
-                                                                        <dt><?= __('Is Read') ?></dt>
-                            <dd>
-                            <?= $message->is_read ? __('Yes') : __('No'); ?>
-                            </dd>
-                                                                    
+                                            
                                                                         <dt><?= __('Message') ?></dt>
                             <dd>
                             <?= $this->Text->autoParagraph(h($message->message)); ?>

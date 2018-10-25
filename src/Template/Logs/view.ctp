@@ -29,9 +29,9 @@
                                         <dd>
                                             <?= h($log->tbl) ?>
                                         </dd>
-                                                                                                                                                            <dt><?= __('Log File') ?></dt>
+                                                                                                                                                            <dt><?= __('Attachtment') ?></dt>
                                         <dd>
-                                            <?= h($log->log_file) ?>
+                                            <?= h($log->attachtment) ?>
                                         </dd>
                                                                                                                                                             <dt><?= __('Ipv4') ?></dt>
                                         <dd>
@@ -54,9 +54,9 @@
                             <?= $log->is_success ? __('Yes') : __('No'); ?>
                             </dd>
                                                                     
-                                                                        <dt><?= __('Content') ?></dt>
+                                                                        <dt><?= __('Description') ?></dt>
                             <dd>
-                            <?= $this->Text->autoParagraph(h($log->content)); ?>
+                            <?= $this->Text->autoParagraph(h($log->description)); ?>
                             </dd>
                                                             </dl>
             </div>

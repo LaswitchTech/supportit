@@ -29,8 +29,8 @@
             echo $this->Form->input('user_id', ['options' => $users]);
             echo $this->Form->input('type');
             echo $this->Form->input('tbl');
-            echo $this->Form->input('content');
-            echo $this->Form->input('log_file');
+            echo $this->Form->input('description');
+            echo $this->Form->input('attachtment');
             echo $this->Form->input('ipv4');
             echo $this->Form->input('is_success');
           ?>

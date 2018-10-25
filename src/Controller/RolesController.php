@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Roles Controller
@@ -20,6 +21,10 @@ class RolesController extends AppController
      */
     public function index()
     {
+        $total = TableRegistry::get('Roles')->find()->count();
+        $this->paginate = [
+            'limit' => $total
+        ];
         $roles = $this->paginate($this->Roles);
 
         $this->set(compact('roles'));
@@ -34,6 +39,10 @@ class RolesController extends AppController
      */
     public function view($id = null)
     {
+        $total = TableRegistry::get('Roles')->find()->count();
+        $this->paginate = [
+            'limit' => $total
+        ];
         $role = $this->Roles->get($id, [
             'contain' => ['Permissions', 'Users']
         ]);

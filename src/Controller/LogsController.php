@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * Logs Controller
@@ -20,8 +21,10 @@ class LogsController extends AppController
      */
     public function index()
     {
+        $total = TableRegistry::get('Logs')->find()->count();
         $this->paginate = [
-            'contain' => ['Users']
+            'contain' => ['Users'],
+            'limit' => $total
         ];
         $logs = $this->paginate($this->Logs);
 
