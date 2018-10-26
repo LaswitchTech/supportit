@@ -132,7 +132,7 @@
               $statement = $subject;
 
               //Update log
-              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', $statement, 1, 1 )";
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$statement."', 1, 1 )";
               if ($conn->query($sql) === TRUE) {
                 echo "Log Updated";
               } else {
@@ -141,7 +141,7 @@
             } else {
               echo "Error: " . $sql . "<br>" . $conn->error;
               //Update log
-              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', $statement, 1, 0 )";
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$statement."', 1, 0 )";
               if ($conn->query($sql) === TRUE) {
                 echo "Log Updated";
               } else {
