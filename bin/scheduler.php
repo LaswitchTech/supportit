@@ -86,7 +86,7 @@
   foreach ($mail_result as $email) {
     echo "Working on ".$email->msgno."\n";
     // Verify Validity of email and if it comes from website
-    if (( $email->from == "LaswitchTech <info@laswitchtech.com>" ) and ( $email->subject == "New Message From LaswitchTech" ) and ( $email->seen == 0 )){
+    if (( $email->from == "LaswitchTech <info@laswitchtech.com>" ) and ( $email->subject == "New Message From LaswitchTech" )){
       echo "Creating ticket from website\n";
       // Get Email Info
       $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
@@ -98,7 +98,7 @@
       $mail_description = substr($tag, 0, strpos($tag, '[enddescription]'));
       // Mail is ready
       $Ready=1;
-    } elseif ( $email->seen == 0 ) {
+    } else {
       echo "Creating ticket from email\n";
       // Decode email
       $mail_body = getBody($email->uid, $mbox);
