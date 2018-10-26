@@ -174,18 +174,18 @@
               // Additional headers
               $headers[] = "To: You <$mail_address>";
               $headers[] = "From: Support Team <support@laswitchtech.com>";
-              //$headers[] = "Cc: birthdayarchive@example.com";
-              //$headers[] = "Bcc: birthdaycheck@example.com";
+              //$headers[] = "Cc: Support Team <support@laswitchtech.com>";
+              //$headers[] = "Bcc: Support Team <support@laswitchtech.com>";
 
               // Mail it
-              //mail($to, $subject, $message, implode("\r\n", $headers));
+              mail($to, $subject, $message, implode("\r\n", $headers));
 
               // Delete Mail
-              //imap_delete($mbox, $email->msgno);
-              //imap_expunge($mbox);
+              imap_delete($mbox, $email->msgno);
+              imap_expunge($mbox);
 
               // Set mail as unread
-              imap_clearflag_full($mbox, $email->msgno, "//Seen");
+              //imap_clearflag_full($mbox, $email->msgno, "//Seen");
 
               $statement = $subject;
 
