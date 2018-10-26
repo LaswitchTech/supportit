@@ -56,7 +56,7 @@
 
           if ( $contact_result->num_rows > 0 ){
             if ( $email->seen == 0 ){
-              $sql = "INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES ( 2, '".$DATE."', '".$DATE."', '".$contact->account_id."', '".$contact->id."', 0, 0, 3, 1, '".$mail_subjet."', '".$mail_description."', 1 )";
+              $sql = "INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES ( 2, '".$DATE."', '".$DATE."', '".$contact['account_id']."', '".$contact['id']."', 0, 0, 3, 1, '".$mail_subjet."', '".$mail_description."', 1 )";
 
               if ($conn->query($sql) === TRUE) {
                 $last_id = $conn->insert_id;
