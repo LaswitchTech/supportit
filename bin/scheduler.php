@@ -56,12 +56,12 @@
       echo "############################################\n";
       // Decode email
       // Get the message body.
-      $body = imap_fetchbody($this->mailbox, $messageId, 1.2);
+      $body = imap_fetchbody($mbox, $email->msgno, 1.2);
       if (!strlen($body) > 0) {
-        $body = imap_fetchbody($this->mailbox, $messageId, 1);
+        $body = imap_fetchbody($mbox, $email->msgno, 1);
       }
       // Get the message body encoding.
-      $encoding = $this->getEncodingType($messageId);
+      $encoding = $this->getEncodingType($email->msgno);
       // Decode body into plaintext (8bit, 7bit, and binary are exempt).
       if ($encoding == 'BASE64') {
         $body = $this->decodeBase64($body);
