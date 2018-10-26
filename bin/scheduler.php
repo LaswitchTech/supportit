@@ -55,30 +55,35 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
-      $overview = imap_fetch_overview($mbox, $email->msgno,0);
-      $structure = imap_fetchstructure($mbox, $email->msgno);
-      $message=0;
-
-      if(isset($structure->parts) && is_array($structure->parts) && isset($structure->parts[1])) {
-          $part = $structure->parts[1];
-          $message = imap_fetchbody($mbox, $email->msgno,2);
-
-          if($part->encoding == 3) {
-              $message = imap_base64($message);
-          } else if($part->encoding == 1) {
-              $message = imap_8bit($message);
-          } else {
-              $message = imap_qprint($message);
-          }
+      // Get the message body.
+      $body = imap_fetchbody($this->mailbox, $messageId, 1.2);
+      if (!strlen($body) > 0) {
+        $body = imap_fetchbody($this->mailbox, $messageId, 1);
       }
+      // Get the message body encoding.
+      $encoding = $this->getEncodingType($messageId);
+      // Decode body into plaintext (8bit, 7bit, and binary are exempt).
+      if ($encoding == 'BASE64') {
+        $body = $this->decodeBase64($body);
+      }
+      elseif ($encoding == 'QUOTED-PRINTABLE') {
+        $body = $this->decodeQuotedPrintable($body);
+      }
+      elseif ($encoding == '8BIT') {
+        $body = $this->decode8Bit($body);
+      }
+      elseif ($encoding == '7BIT') {
+        $body = $this->decode7Bit($body);
+      }
+
+
+
       echo "--------------------------------------------\n";
-      echo "overview=> ".$overview."\n";
-      echo "structure=> ".$structure."\n";
-      echo "message=> ".$message."\n";
+      echo "body=> ".$body."\n";
       echo "--------------------------------------------\n";
 
       // Get Email Info
-      $mail_body = $message;
+      $mail_body = $body;
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
