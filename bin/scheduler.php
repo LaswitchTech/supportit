@@ -41,9 +41,9 @@
 
     // Fetch Contact
     $sql = "SELECT * FROM contacts WHERE email = $mail_address";
-    echo "#################\n"
+    echo "#################\n";
     echo $sql;
-    echo "\n#################\n"
+    echo "\n#################\n";
     $contact_result = $conn->query($sql);
     $contact = mysqli_fetch_assoc($contact_result);
 
