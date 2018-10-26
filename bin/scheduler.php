@@ -55,29 +55,10 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
-      $overview = imap_fetch_overview($mbox, $email,0);
-      $structure = imap_fetchstructure($mbox, $email);
-      $message=0;
-
-      if(isset($structure->parts) && is_array($structure->parts) && isset($structure->parts[1])) {
-          $part = $structure->parts[1];
-          $message = imap_fetchbody($mbox, $email,2);
-
-          if($part->encoding == 3) {
-              $message = imap_base64($message);
-          } else if($part->encoding == 1) {
-              $message = imap_8bit($message);
-          } else {
-              $message = imap_qprint($message);
-          }
-      }
-
-      echo "--------------------------------------------\n";
-      echo "message=> ".$message."\n";
-      echo "--------------------------------------------\n";
+      $mail_body = imap_body($mbox, $email->msgno);
+      $mail_body = utf8_encode(quoted_printable_decode($mail_body));
 
       // Get Email Info
-      $mail_body = $message;
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
