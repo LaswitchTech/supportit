@@ -87,7 +87,7 @@
               ini_restore(sendmail_from);
 
               //Update log
-              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', $sql, 1, $_SERVER['REMOTE_ADDR'], 1 )";
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', 'INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES', 1, $_SERVER['REMOTE_ADDR'], 1 )";
               if ($conn->query($sql) === TRUE) {
                 echo "Log Updated"
               } else {
@@ -96,7 +96,7 @@
             } else {
               echo "Error: " . $sql . "<br>" . $conn->error;
               //Update log
-              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', $sql, 1, $_SERVER['REMOTE_ADDR'], 0 )";
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', 'INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES', 1, $_SERVER['REMOTE_ADDR'], 0 )";
               if ($conn->query($sql) === TRUE) {
                 echo "Log Updated"
               } else {
