@@ -44,15 +44,11 @@
         $mail_description = substr($tag, 0, strpos($tag, '[enddescription]'));
 
         // Fetch Contact
-        $sql = "SELECT * FROM contacts WHERE email = $mail_address";
+        $sql = "SELECT * FROM contacts WHERE email='".$mail_address."';";
         $contact_result = $conn->query($sql);
         echo "###################################################################\n";
         echo "contact_result : ".$contact_result."\n";
         echo "sql : ".$sql."\n";
-        echo "tag : ".$tag."\n";
-        echo "mail_address : ".$mail_address."\n";
-        echo "mail_subjet : ".$mail_subjet."\n";
-        echo "mail_description : ".$mail_description."\n";
         echo "###################################################################\n";
 
         if( $contact_result ){
