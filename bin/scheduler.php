@@ -103,6 +103,9 @@
                 // Mail it
                 mail($to, $subject, $message, implode("\r\n", $headers));
 
+                // Delete Mail
+                imap_delete($mbox, $email->msgno);
+
                 //Update log
                 $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', 'This could be my statement', 1, 1 )";
                 if ($conn->query($sql) === TRUE) {
