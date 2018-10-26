@@ -56,7 +56,7 @@
               # To Email Address
               $emailaddress=$mail_address;
               # Message Subject
-              $emailsubject="Ticket#".$last_id." has been created");
+              $emailsubject="Ticket#".$last_id." has been created";
 
               # Common Headers
               $headers .= 'From: LaswitchTech-Support <support@laswitchtech.com>'.$eol;
