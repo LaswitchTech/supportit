@@ -49,7 +49,7 @@
       if ( $email->subject == "New Message From LaswitchTech" ){
         if ( $email->from == "LaswitchTech <info@laswitchtech.com>" ){
           if ( $email->seen == 0 ){
-            $sql = "INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES ( 2, $DATE, $DATE, $contact->account_id, $contact->id, 0, 0, 3, 1, $mail_subjet, $mail_description, 1 )";
+            $sql = "INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES ( 2, '".$DATE."', '".$DATE."', '".$contact->account_id."', '".$contact->id."', 0, 0, 3, 1, '".$mail_subjet."', '".$mail_description."', 1 )";
 
             if ($conn->query($sql) === TRUE) {
               $last_id = $conn->insert_id;
@@ -87,7 +87,7 @@
               ini_restore(sendmail_from);
 
               //Update log
-              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', 'INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES', 1, $_SERVER['REMOTE_ADDR'], 1 )";
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, '".$_SERVER['REMOTE_ADDR']."', 1 )";
               if ($conn->query($sql) === TRUE) {
                 echo "Log Updated"
               } else {
@@ -96,7 +96,7 @@
             } else {
               echo "Error: " . $sql . "<br>" . $conn->error;
               //Update log
-              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', 'INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, user_id ) VALUES', 1, $_SERVER['REMOTE_ADDR'], 0 )";
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, '".$_SERVER['REMOTE_ADDR']."', 0 )";
               if ($conn->query($sql) === TRUE) {
                 echo "Log Updated"
               } else {
