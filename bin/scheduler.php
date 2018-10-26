@@ -104,7 +104,7 @@
                 mail($to, $subject, $message, implode("\r\n", $headers));
 
                 //Update log
-                $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, '".$_SERVER['REMOTE_ADDR']."', 1 )";
+                $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, 1 )";
                 if ($conn->query($sql) === TRUE) {
                   echo "Log Updated";
                 } else {
@@ -113,7 +113,7 @@
               } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
                 //Update log
-                $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, '".$_SERVER['REMOTE_ADDR']."', 0 )";
+                $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, 0 )";
                 if ($conn->query($sql) === TRUE) {
                   echo "Log Updated";
                 } else {
