@@ -84,14 +84,10 @@
 
   // Generate Tickets
   foreach ($mail_result as $email) {
-    echo "############################################\n";
     echo "Working on ".$email->msgno."\n";
-    echo "############################################\n";
     // Verify Validity of email and if it comes from website
-    if (( $email->from == "LaswitchTech <info@laswitchtech.com>" ) and ( $email->subject == "New Message From LaswitchTech" )){
-      echo "############################################\n";
+    if (( $email->from == "LaswitchTech <info@laswitchtech.com>" ) and ( $email->subject == "New Message From LaswitchTech" ) and ( $email->seen == 0 )){
       echo "Creating ticket from website\n";
-      echo "############################################\n";
       // Get Email Info
       $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
       $tag = substr($mail_body, strpos($mail_body, '[email]')+7);
@@ -102,10 +98,8 @@
       $mail_description = substr($tag, 0, strpos($tag, '[enddescription]'));
       // Mail is ready
       $Ready=1;
-    } else {
-      echo "############################################\n";
+    } elseif ( $email->seen == 0 ) {
       echo "Creating ticket from email\n";
-      echo "############################################\n";
       // Decode email
       $mail_body = getBody($email->uid, $mbox);
 
@@ -118,14 +112,7 @@
       $Ready=1;
     }
     if ($Ready == 1){
-      echo "############################################\n";
       echo "Sending a reply\n";
-      echo "############################################\n";
-      echo "--------------------------------------------\n";
-      echo "mail_address=> ".$mail_address."\n";
-      echo "mail_subjet=> ".$mail_subjet."\n";
-      echo "mail_description=> ".$mail_description."\n";
-      echo "--------------------------------------------\n";
       // Fetch Contact
       $sql = "SELECT * FROM contacts WHERE email='".$mail_address."';";
       $contact_result = $conn->query($sql);
