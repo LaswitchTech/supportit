@@ -11,7 +11,7 @@
 
   // Get Configuration Info
   include "/usr/share/supportit/config.php";
-  DATE=$date->format('Y-m-d H:i:s');
+  $DATE = date('Y-m-d H:i:s');
 
   // Connect to Mail Server
   $mbox = imap_open("{".$MAIL_CONNECT['Host'].":".$MAIL_CONNECT['Port']."}".$MAIL_CONNECT['Folder'], $MAIL_CONNECT['Username'], $MAIL_CONNECT['Password']) or die("can't connect: " . imap_last_error());
