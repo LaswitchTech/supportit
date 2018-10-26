@@ -41,11 +41,11 @@
 
     // Fetch Contact
     $sql = "SELECT * FROM contacts WHERE email = $mail_address";
-    $contact_result = $conn->query($sql);
+    $contact_result = mysqli_query($conn, $sql);
     $contact = mysqli_fetch_assoc($contact_result);
 
     // Verify Existence of User and Verify Mail Issuer for New Ticket
-    if ($contact_result->num_rows > 0){
+    if (mysqli_num_rows($result) > 0){
       if ( $email->subject == "New Message From LaswitchTech" ){
         if ( $email->from == "LaswitchTech <info@laswitchtech.com>" ){
           if ( $email->seen == 0 ){
