@@ -57,6 +57,7 @@
       // Decode email
       $overview = imap_fetch_overview($mbox, $email->msgno,0);
       $structure = imap_fetchstructure($mbox, $email->msgno);
+      $message=0;
 
       if(isset($structure->parts) && is_array($structure->parts) && isset($structure->parts[1])) {
           $part = $structure->parts[1];
@@ -70,6 +71,11 @@
               $message = imap_qprint($message);
           }
       }
+      echo "--------------------------------------------\n";
+      echo "overview=> ".$overview."\n";
+      echo "structure=> ".$structure."\n";
+      echo "message=> ".$message."\n";
+      echo "--------------------------------------------\n";
 
       // Get Email Info
       $mail_body = $message;
