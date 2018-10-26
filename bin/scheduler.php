@@ -13,6 +13,25 @@
   $Ready=0;
 
   // Decoding
+  function getEncodingType($messageId, $numeric = false) {
+    // See imap_fetchstructure() documentation for explanation.
+    $encodings = array(
+      0 => '7BIT',
+      1 => '8BIT',
+      2 => 'BINARY',
+      3 => 'BASE64',
+      4 => 'QUOTED-PRINTABLE',
+      5 => 'OTHER',
+    );
+    // Get the structure of the message.
+    $structure = $this->getStructure($messageId);
+    // Return a number or a string, depending on the $numeric value.
+    if ($numeric) {
+      return $structure->encoding;
+    } else {
+      return $encodings[$structure->encoding];
+    }
+  }
   function decodeBase64($text) {
     $this->tickle();
     return imap_base64($text);
