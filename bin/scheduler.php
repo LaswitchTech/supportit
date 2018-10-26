@@ -55,8 +55,16 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
+      $encoding_type = imap_fetchstructure($mbox, $email->msgno);
       $mail_body = imap_body($mbox, $email->msgno);
       $mail_body = utf8_encode(quoted_printable_decode($mail_body));
+
+      echo "--------------------------------------------\n";
+      echo "encoding_type[0]=> ".$encoding_type[0]."\n";
+      echo "encoding_type[1]=> ".$encoding_type[1]."\n";
+      echo "encoding_type[2]=> ".$encoding_type[2]."\n";
+      echo "encoding_type[3]=> ".$encoding_type[3]."\n";
+      echo "--------------------------------------------\n";
 
       // Get Email Info
       $tag = substr($email->from, strpos($email->from, '<')+1);
