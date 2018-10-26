@@ -47,7 +47,6 @@
         $sql = "SELECT * FROM contacts WHERE email='".$mail_address."';";
         $contact_result = $conn->query($sql);
         echo "###################################################################\n";
-        echo "contact_result : ".$contact_result."\n";
         echo "sql : ".$sql."\n";
         echo "###################################################################\n";
 
