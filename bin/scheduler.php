@@ -105,6 +105,7 @@
 
                 // Delete Mail
                 imap_delete($mbox, $email->msgno);
+                imap_expunge($mbox);
 
                 //Update log
                 $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', 'This could be my statement', 1, 1 )";
