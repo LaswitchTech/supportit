@@ -31,7 +31,9 @@
 
   // Generate Tickets
   foreach ($mail_result as $email) {
-
+    echo "############################################\n";
+    echo "Working on ".$email->msgno."\n";
+    echo "############################################\n";
     // Verify Validity of email and if it comes from website
     if (( $email->from == "LaswitchTech <info@laswitchtech.com>" ) and ( $email->subject == "New Message From LaswitchTech" )){
       // Get Email Info
@@ -45,10 +47,12 @@
       // Mail is ready
       $Ready=1;
     } else {
+      // Get Email Info
+      $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
-      $mail_description=imap_qprint(imap_body($mbox, $email->msgno));
+      $mail_description=$mail_body;
     }
     if ($Ready == 1){
       // Fetch Contact
