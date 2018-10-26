@@ -1,114 +1,5 @@
 <?php
 
-  // End of Line
-  if (strtoupper(substr(PHP_OS,0,3)=='WIN')) {
-    $eol="\r\n";
-  } elseif (strtoupper(substr(PHP_OS,0,3)=='MAC')) {
-    $eol="\r";
-  } else {
-    $eol="\n";
-  }
-
-  // Init Var
-  $Ready=0;
-
-  // Decoding
-  function getEncodingType($messageId, $numeric = false) {
-    // See imap_fetchstructure() documentation for explanation.
-    $encodings = array(
-      0 => '7BIT',
-      1 => '8BIT',
-      2 => 'BINARY',
-      3 => 'BASE64',
-      4 => 'QUOTED-PRINTABLE',
-      5 => 'OTHER',
-    );
-    // Get the structure of the message.
-    $structure = $this->getStructure($messageId);
-    // Return a number or a string, depending on the $numeric value.
-    if ($numeric) {
-      return $structure->encoding;
-    } else {
-      return $encodings[$structure->encoding];
-    }
-  }
-  function decodeBase64($text) {
-    $this->tickle();
-    return imap_base64($text);
-  }
-  /**
-   * Decodes quoted-printable text.
-   *
-   * @param $text (string)
-   *   Quoted printable text to convert.
-   *
-   * @return (string)
-   *   Decoded text.
-   */
-  function decodeQuotedPrintable($text) {
-    return quoted_printable_decode($text);
-  }
-  /**
-   * Decodes 8-Bit text.
-   *
-   * @param $text (string)
-   *   8-Bit text to convert.
-   *
-   * @return (string)
-   *   Decoded text.
-   */
-  function decode8Bit($text) {
-    return quoted_printable_decode(imap_8bit($text));
-  }
-  /**
-   * Decodes 7-Bit text.
-   *
-   * PHP seems to think that most emails are 7BIT-encoded, therefore this
-   * decoding method assumes that text passed through may actually be base64-
-   * encoded, quoted-printable encoded, or just plain text. Instead of passing
-   * the email directly through a particular decoding function, this method
-   * runs through a bunch of common encoding schemes to try to decode everything
-   * and simply end up with something *resembling* plain text.
-   *
-   * Results are not guaranteed, but it's pretty good at what it does.
-   *
-   * @param $text (string)
-   *   7-Bit text to convert.
-   *
-   * @return (string)
-   *   Decoded text.
-   */
-  function decode7Bit($text) {
-    // If there are no spaces on the first line, assume that the body is
-    // actually base64-encoded, and decode it.
-    $lines = explode("\r\n", $text);
-    $first_line_words = explode(' ', $lines[0]);
-    if ($first_line_words[0] == $lines[0]) {
-      $text = base64_decode($text);
-    }
-    // Manually convert common encoded characters into their UTF-8 equivalents.
-    $characters = array(
-      '=20' => ' ', // space.
-      '=2C' => ',', // comma.
-      '=E2=80=99' => "'", // single quote.
-      '=0A' => "\r\n", // line break.
-      '=0D' => "\r\n", // carriage return.
-      '=A0' => ' ', // non-breaking space.
-      '=B9' => '$sup1', // 1 superscript.
-      '=C2=A0' => ' ', // non-breaking space.
-      "=\r\n" => '', // joined line.
-      '=E2=80=A6' => '&hellip;', // ellipsis.
-      '=E2=80=A2' => '&bull;', // bullet.
-      '=E2=80=93' => '&ndash;', // en dash.
-      '=E2=80=94' => '&mdash;', // em dash.
-    );
-    // Loop through the encoded characters and replace any that are found.
-    foreach ($characters as $key => $value) {
-      $text = str_replace($key, $value, $text);
-    }
-    return $text;
-  }
-
   // Get Configuration Info
   include "/usr/share/supportit/config.php";
   $DATE = date('Y-m-d H:i:s');
@@ -123,6 +14,18 @@
   if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
   }
+
+  // End of Line
+  if (strtoupper(substr(PHP_OS,0,3)=='WIN')) {
+    $eol="\r\n";
+  } elseif (strtoupper(substr(PHP_OS,0,3)=='MAC')) {
+    $eol="\r";
+  } else {
+    $eol="\n";
+  }
+
+  // Init Var
+  $Ready=0;
 
   // Fetch an overview for all messages in Folder
   $mail_result = imap_fetch_overview($mbox,"1:{$MC->Nmsgs}",0);
@@ -152,33 +55,29 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
+      $overview = imap_fetch_overview($mbox, $email->msgno,0);
+      $structure = imap_fetchstructure($mbox, $email->msgno);
+      $message=0;
 
-      // Get the message body.
-      $body = imap_fetchbody($mbox, $email->msgno, 1.2);
-      if (!strlen($body) > 0) {
-        $body = imap_fetchbody($mbox, $email->msgno, 1);
+      if(isset($structure->parts) && is_array($structure->parts) && isset($structure->parts[1])) {
+          $part = $structure->parts[1];
+          $message = imap_fetchbody($mbox, $email->msgno,2);
+
+          if($part->encoding == 3) {
+              $message = imap_base64($message);
+          } else if($part->encoding == 1) {
+              $message = imap_8bit($message);
+          } else {
+              $message = imap_qprint($message);
+          }
       }
-      // Get the message body encoding.
-      $encoding = getEncodingType($email->msgno);
-      // Decode body into plaintext (8bit, 7bit, and binary are exempt).
-      if ($encoding == 'BASE64') {
-        $body = decodeBase64($body);
-      } elseif ($encoding == 'QUOTED-PRINTABLE') {
-        $body = decodeQuotedPrintable($body);
-      } elseif ($encoding == '8BIT') {
-        $body = decode8Bit($body);
-      } elseif ($encoding == '7BIT') {
-        $body = decode7Bit($body);
-      }
-
-
 
       echo "--------------------------------------------\n";
-      echo "body=> ".$body."\n";
+      echo "message=> ".$message."\n";
       echo "--------------------------------------------\n";
 
       // Get Email Info
-      $mail_body = $body;
+      $mail_body = $message;
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
