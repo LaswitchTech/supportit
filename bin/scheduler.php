@@ -13,7 +13,7 @@
   $Ready=0;
 
   // Decoding
-  public function decodeBase64($text) {
+  function decodeBase64($text) {
     $this->tickle();
     return imap_base64($text);
   }
@@ -26,7 +26,7 @@
    * @return (string)
    *   Decoded text.
    */
-  public function decodeQuotedPrintable($text) {
+  function decodeQuotedPrintable($text) {
     return quoted_printable_decode($text);
   }
   /**
@@ -38,7 +38,7 @@
    * @return (string)
    *   Decoded text.
    */
-  public function decode8Bit($text) {
+  function decode8Bit($text) {
     return quoted_printable_decode(imap_8bit($text));
   }
   /**
@@ -59,7 +59,7 @@
    * @return (string)
    *   Decoded text.
    */
-  public function decode7Bit($text) {
+  function decode7Bit($text) {
     // If there are no spaces on the first line, assume that the body is
     // actually base64-encoded, and decode it.
     $lines = explode("\r\n", $text);
