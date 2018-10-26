@@ -40,7 +40,7 @@
     $mail_description = substr($tag, 0, strpos($tag, '[\description]'));
 
     // Fetch Contact
-    $sql = "SELECT * FROM contacts WHERE email=".$mail_address;
+    $sql = "SELECT * FROM contacts WHERE email = $mail_address";
     $contact_result = $conn->query($sql);
     $contact = mysqli_fetch_assoc($contact_result);
 
