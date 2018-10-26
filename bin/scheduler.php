@@ -36,6 +36,9 @@
     echo "############################################\n";
     // Verify Validity of email and if it comes from website
     if (( $email->from == "LaswitchTech <info@laswitchtech.com>" ) and ( $email->subject == "New Message From LaswitchTech" )){
+      echo "############################################\n";
+      echo "Creating ticket from website\n";
+      echo "############################################\n";
       // Get Email Info
       $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
       $tag = substr($mail_body, strpos($mail_body, '[email]')+7);
@@ -47,14 +50,22 @@
       // Mail is ready
       $Ready=1;
     } else {
+      echo "############################################\n";
+      echo "Creating ticket from email\n";
+      echo "############################################\n";
       // Get Email Info
       $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
       $mail_description=$mail_body;
+      // Mail is ready
+      $Ready=1;
     }
     if ($Ready == 1){
+      echo "############################################\n";
+      echo "Sending a reply\n";
+      echo "############################################\n";
       // Fetch Contact
       $sql = "SELECT * FROM contacts WHERE email='".$mail_address."';";
       $contact_result = $conn->query($sql);
