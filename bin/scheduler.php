@@ -60,6 +60,7 @@
       $mail_body = utf8_encode(quoted_printable_decode($mail_body));
 
       echo "--------------------------------------------\n";
+      echo "encoding_type=> ".$encoding_type."\n";
       echo "encoding_type[0]=> ".$encoding_type[0]."\n";
       echo "encoding_type[1]=> ".$encoding_type[1]."\n";
       echo "encoding_type[2]=> ".$encoding_type[2]."\n";
