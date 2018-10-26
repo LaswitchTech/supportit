@@ -60,38 +60,48 @@
 
               if ($conn->query($sql) === TRUE) {
                 $last_id = $conn->insert_id;
-                # To Email Address
-                $emailaddress=$mail_address;
-                # Message Subject
-                $emailsubject="Ticket#".$last_id." has been created";
+                // Multiple recipients
+                $to = "$mail_address"; // note the comma
 
-                # Common Headers
-                $headers .= 'From: LaswitchTech-Support <support@laswitchtech.com>'.$eol;
-                $headers .= 'Reply-To: LaswitchTech-Support <support@laswitchtech.com>'.$eol;
-                $headers .= 'Return-Path: LaswitchTech-Support <support@laswitchtech.com>'.$eol;     // these two to set reply address
-                $headers .= "Message-ID:<".$DATE." system@laswitchtech.com>".$eol;
-                $headers .= "X-Mailer: PHP v".phpversion().$eol;           // These two to help avoid spam-filters
-                # Boundry for marking the split & Multitype Headers
-                $mime_boundary=md5(time());
-                $headers .= 'MIME-Version: 1.0'.$eol;
-                $headers .= "Content-Type: multipart/related; boundary=\"".$mime_boundary."\"".$eol;
-                $msg = "";
+                // Subject
+                $subject = "Ticket#$last_id has been created";
 
-                # Text Version
-                $msg .= "--".$mime_boundary.$eol;
-                $msg .= "Content-Type: text/plain; charset=iso-8859-1".$eol;
-                $msg .= "Content-Transfer-Encoding: 8bit".$eol;
-                $msg .= "This is a multi-part message in MIME format.".$eol;
-                $msg .= "If you are reading this, please update your email-reading-software.".$eol;
-                $msg .= "+ + Text Only Email from Genius Jon + +".$eol.$eol;
+                // Message
+                $message = "
+                <html>
+                <head>
+                  <title>Ticket#$last_id has been created</title>
+                </head>
+                <body>
+                  <p>Here are the details of your ticket</p>
+                  <table>
+                    <tr>
+                      <th>E-mail</th>
+                      <th>Subject</th>
+                      <th>Issue</th>
+                    </tr>
+                    <tr>
+                      <td>$mail_address</td>
+                      <td>$mail_subjet</td>
+                      <td>$mail_description</td>
+                    </tr>
+                  </table>
+                </body>
+                </html>
+                ";
 
-                # Finished
-                $msg .= "--".$mime_boundary."--".$eol.$eol;   // finish with two eol's for better security. see Injection.
+                // To send HTML mail, the Content-type header must be set
+                $headers[] = 'MIME-Version: 1.0';
+                $headers[] = 'Content-type: text/html; charset=iso-8859-1';
 
-                # SEND THE EMAIL
-                ini_set(sendmail_from,'support@laswitchtech.com');  // the INI lines are to force the From Address to be used !
-                mail($emailaddress, $emailsubject, $msg, $headers);
-                ini_restore(sendmail_from);
+                // Additional headers
+                $headers[] = "To: You <$mail_address>";
+                $headers[] = "From: Support Team <support@laswitchtech.com>";
+                //$headers[] = "Cc: birthdayarchive@example.com";
+                //$headers[] = "Bcc: birthdaycheck@example.com";
+
+                // Mail it
+                mail($to, $subject, $message, implode("\r\n", $headers));
 
                 //Update log
                 $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, '".$_SERVER['REMOTE_ADDR']."', 1 )";
