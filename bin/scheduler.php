@@ -12,6 +12,78 @@
   // Init Var
   $Ready=0;
 
+  // Decoding
+  public function decodeBase64($text) {
+    $this->tickle();
+    return imap_base64($text);
+  }
+  /**
+   * Decodes quoted-printable text.
+   *
+   * @param $text (string)
+   *   Quoted printable text to convert.
+   *
+   * @return (string)
+   *   Decoded text.
+   */
+  public function decodeQuotedPrintable($text) {
+    return quoted_printable_decode($text);
+  }
+  /**
+   * Decodes 8-Bit text.
+   *
+   * @param $text (string)
+   *   8-Bit text to convert.
+   *
+   * @return (string)
+   *   Decoded text.
+   */
+  public function decode8Bit($text) {
+    return quoted_printable_decode(imap_8bit($text));
+  }
+  /**
+   * Decodes 7-Bit text.
+   *
+   * PHP seems to think that most emails are 7BIT-encoded, therefore this
+   * decoding method assumes that text passed through may actually be base64-
+   * encoded, quoted-printable encoded, or just plain text. Instead of passing
+   * the email directly through a particular decoding function, this method
+   * runs through a bunch of common encoding schemes to try to decode everything
+   * and simply end up with something *resembling* plain text.
+   *
+   * Results are not guaranteed, but it's pretty good at what it does.
+   *
+   * @param $text (string)
+   *   7-Bit text to convert.
+   *
+   * @return (string)
+   *   Decoded text.
+   */
+  public function decode7Bit($text) {
+    // If there are no spaces on the first line, assume that the body is
+    // actually base64-encoded, and decode it.
+    $lines = explode("\r\n", $text);
+    $first_line_words = explode(' ', $lines[0]);
+    if ($first_line_words[0] == $lines[0]) {
+      $text = base64_decode($text);
+    }
+    // Manually convert common encoded characters into their UTF-8 equivalents.
+    $characters = array(
+      '=20' => ' ', // space.
+      '=2C' => ',', // comma.
+      '=E2=80=99' => "'", // single quote.
+      '=0A' => "\r\n", // line break.
+      '=0D' => "\r\n", // carriage return.
+      '=A0' => ' ', // non-breaking space.
+      '=B9' => '$sup1', // 1 superscript.
+      '=C2=A0' => ' ', // non-breaking space.
+      "=\r\n" => '', // joined line.
+      '=E2=80=A6' => '&hellip;', // ellipsis.
+      '=E2=80=A2' => '&bull;', // bullet.
+      '=E2=80=93' => '&ndash;', // en dash.
+      '=E2=80=94' => '&mdash;', // em dash.
+    );
+
   // Get Configuration Info
   include "/usr/share/supportit/config.php";
   $DATE = date('Y-m-d H:i:s');
@@ -61,19 +133,19 @@
         $body = imap_fetchbody($mbox, $email->msgno, 1);
       }
       // Get the message body encoding.
-      $encoding = $this->getEncodingType($email->msgno);
+      $encoding = getEncodingType($email->msgno);
       // Decode body into plaintext (8bit, 7bit, and binary are exempt).
       if ($encoding == 'BASE64') {
-        $body = $this->decodeBase64($body);
+        $body = decodeBase64($body);
       }
       elseif ($encoding == 'QUOTED-PRINTABLE') {
-        $body = $this->decodeQuotedPrintable($body);
+        $body = decodeQuotedPrintable($body);
       }
       elseif ($encoding == '8BIT') {
-        $body = $this->decode8Bit($body);
+        $body = decode8Bit($body);
       }
       elseif ($encoding == '7BIT') {
-        $body = $this->decode7Bit($body);
+        $body = decode7Bit($body);
       }
 
 
