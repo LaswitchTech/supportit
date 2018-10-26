@@ -54,7 +54,7 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Get Email Info
-      $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
+      $mail_body = imap_body($mbox, $email->msgno);
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
