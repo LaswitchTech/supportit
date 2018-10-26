@@ -27,25 +27,25 @@
   // Init Var
   $Ready=0;
 
-  function getBody($uid, $imap) {
-    $body = get_part($imap, $uid, "TEXT/HTML");
+  function getBody($uid, $mbox) {
+    $body = get_part($mbox, $uid, "TEXT/HTML");
     // if HTML body is empty, try getting text body
     if ($body == "") {
-        $body = get_part($imap, $uid, "TEXT/PLAIN");
+        $body = get_part($mbox, $uid, "TEXT/PLAIN");
     }
     return $body;
   }
 
-  function get_part($imap, $uid, $mimetype, $structure = false, $partNumber = false) {
+  function get_part($mbox, $uid, $mimetype, $structure = false, $partNumber = false) {
       if (!$structure) {
-             $structure = imap_fetchstructure($imap, $uid, FT_UID);
+             $structure = imap_fetchstructure($mbox, $uid, FT_UID);
       }
       if ($structure) {
           if ($mimetype == get_mime_type($structure)) {
               if (!$partNumber) {
                   $partNumber = 1;
               }
-              $text = imap_fetchbody($imap, $uid, $partNumber, FT_UID);
+              $text = imap_fetchbody($mbox, $uid, $partNumber, FT_UID);
               switch ($structure->encoding) {
                   case 3: return imap_base64($text);
                   case 4: return imap_qprint($text);
@@ -60,7 +60,7 @@
                   if ($partNumber) {
                       $prefix = $partNumber . ".";
                   }
-                  $data = get_part($imap, $uid, $mimetype, $subStruct, $prefix . ($index + 1));
+                  $data = get_part($mbox, $uid, $mimetype, $subStruct, $prefix . ($index + 1));
                   if ($data) {
                       return $data;
                   }
@@ -107,7 +107,7 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
-      $mail_body = getBody($mbox, $email->uid);
+      $mail_body = getBody($email->uid, $mbox);
 
       // Get Email Info
       $tag = substr($email->from, strpos($email->from, '<')+1);
