@@ -167,6 +167,13 @@
               // Mail it
               mail($to, $subject, $message, implode("\r\n", $headers));
 
+              echo "###########################################################\n";
+              echo "to=> ".$to."\n";
+              echo "subject=> ".$subject."\n";
+              echo "message=> ".$message."\n";
+              echo "headers=> ".$headers."\n";
+              echo "###########################################################\n";
+
               // Delete Mail
               imap_delete($mbox, $email->msgno);
               imap_expunge($mbox);
@@ -179,7 +186,7 @@
               //Update log
               $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$statement."', 1, 1 )";
               if ($conn->query($sql) === TRUE) {
-                echo "Log Updated";
+                echo "Log Updated\n";
               } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
               }
@@ -188,7 +195,7 @@
               //Update log
               $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$statement."', 1, 0 )";
               if ($conn->query($sql) === TRUE) {
-                echo "Log Updated";
+                echo "Log Updated\n";
               } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
               }
