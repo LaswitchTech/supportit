@@ -37,11 +37,11 @@
         // Get Email Info
         $mail_body = imap_qprint(imap_body($mbox, $email->msgno));
         $tag = substr($mail_body, strpos($mail_body, '[email]')+7);
-        $mail_address = substr($tag, 0, strpos($tag, '[\email]'));
+        $mail_address = substr($tag, 0, strpos($tag, '[endemail]'));
         $tag = substr($mail_body, strpos($mail_body, '[subject]')+9);
-        $mail_subjet = substr($tag, 0, strpos($tag, '[\subject]'));
+        $mail_subjet = substr($tag, 0, strpos($tag, '[endsubject]'));
         $tag = substr($mail_body, strpos($mail_body, '[description]')+13);
-        $mail_description = substr($tag, 0, strpos($tag, '[\description]'));
+        $mail_description = substr($tag, 0, strpos($tag, '[enddescription]'));
 
         // Fetch Contact
         $sql = "SELECT * FROM contacts WHERE email = $mail_address";
