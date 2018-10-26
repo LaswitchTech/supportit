@@ -27,6 +27,58 @@
   // Init Var
   $Ready=0;
 
+  function getBody($uid, $imap) {
+    $body = get_part($imap, $uid, "TEXT/HTML");
+    // if HTML body is empty, try getting text body
+    if ($body == "") {
+        $body = get_part($imap, $uid, "TEXT/PLAIN");
+    }
+    return $body;
+  }
+
+  function get_part($imap, $uid, $mimetype, $structure = false, $partNumber = false) {
+      if (!$structure) {
+             $structure = imap_fetchstructure($imap, $uid, FT_UID);
+      }
+      if ($structure) {
+          if ($mimetype == get_mime_type($structure)) {
+              if (!$partNumber) {
+                  $partNumber = 1;
+              }
+              $text = imap_fetchbody($imap, $uid, $partNumber, FT_UID);
+              switch ($structure->encoding) {
+                  case 3: return imap_base64($text);
+                  case 4: return imap_qprint($text);
+                  default: return $text;
+             }
+         }
+
+          // multipart
+          if ($structure->type == 1) {
+              foreach ($structure->parts as $index => $subStruct) {
+                  $prefix = "";
+                  if ($partNumber) {
+                      $prefix = $partNumber . ".";
+                  }
+                  $data = get_part($imap, $uid, $mimetype, $subStruct, $prefix . ($index + 1));
+                  if ($data) {
+                      return $data;
+                  }
+              }
+          }
+      }
+      return false;
+  }
+
+  function get_mime_type($structure) {
+      $primaryMimetype = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER");
+
+      if ($structure->subtype) {
+         return $primaryMimetype[(int)$structure->type] . "/" . $structure->subtype;
+      }
+      return "TEXT/PLAIN";
+  }
+
   // Fetch an overview for all messages in Folder
   $mail_result = imap_fetch_overview($mbox,"1:{$MC->Nmsgs}",0);
 
@@ -55,17 +107,7 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
-      $encoding_type = imap_fetchstructure($mbox, $email->msgno);
-      $mail_body = imap_body($mbox, $email->msgno);
-      $mail_body = utf8_encode(quoted_printable_decode($mail_body));
-
-      echo "--------------------------------------------\n";
-      echo "encoding_type=> ".$encoding_type."\n";
-      echo "encoding_type[0]=> ".$encoding_type[0]."\n";
-      echo "encoding_type[1]=> ".$encoding_type[1]."\n";
-      echo "encoding_type[2]=> ".$encoding_type[2]."\n";
-      echo "encoding_type[3]=> ".$encoding_type[3]."\n";
-      echo "--------------------------------------------\n";
+      $mail_body = getBody($mbox, $email->msgno);
 
       // Get Email Info
       $tag = substr($email->from, strpos($email->from, '<')+1);
@@ -136,11 +178,14 @@
               //$headers[] = "Bcc: birthdaycheck@example.com";
 
               // Mail it
-              mail($to, $subject, $message, implode("\r\n", $headers));
+              //mail($to, $subject, $message, implode("\r\n", $headers));
 
               // Delete Mail
-              imap_delete($mbox, $email->msgno);
-              imap_expunge($mbox);
+              //imap_delete($mbox, $email->msgno);
+              //imap_expunge($mbox);
+
+              // Set mail as unread
+              imap_clearflag_full($mbox, $email->msgno, "//Seen");
 
               $statement = $subject;
 
