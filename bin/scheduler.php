@@ -9,7 +9,30 @@
     $eol="\n";
   }
 
+  // Init Var
   $Ready=0;
+
+  // Body decoding
+  function printarray($array){
+    while(list($key,$value) = each($array)){
+      if(is_array($value)){
+        echo $key."(array):<blockquote>";
+        printarray($value);//recursief!!
+        echo "</blockquote>";
+      }elseif(is_object($value)){
+        echo $key."(object):<blockquote>";
+        printobject($value);
+        echo "</blockquote>";
+      }else{
+        echo $key."==>".$value."<br />";
+      }
+    }
+  }
+
+  function printobject($obj){
+    $array = get_object_vars($obj);
+    printarray($array);
+  }
 
   // Get Configuration Info
   include "/usr/share/supportit/config.php";
@@ -54,11 +77,11 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Get Email Info
-      $mail_body = imap_body($mbox, $email->msgno);
+      $struct = imap_fetchstructure($mbox, $email->msgno);
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
-      $mail_description=$mail_body;
+      $mail_description=printobject($struct);
       // Mail is ready
       $Ready=1;
     }
