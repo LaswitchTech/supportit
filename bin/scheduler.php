@@ -89,7 +89,7 @@
               //Update log
               $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, '".$DATE."', '".$DATE."', 1, 'tickets', '".$sql."', 1, '".$_SERVER['REMOTE_ADDR']."', 1 )";
               if ($conn->query($sql) === TRUE) {
-                echo "Log Updated"
+                echo "Log Updated";
               } else {
                 echo "Error: " . $sql . "<br>" . $conn->error;
               }
