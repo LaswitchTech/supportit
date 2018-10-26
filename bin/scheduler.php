@@ -1,6 +1,17 @@
 <?php
+
+  // End of Line
+  if (strtoupper(substr(PHP_OS,0,3)=='WIN')) {
+    $eol="\r\n";
+  } elseif (strtoupper(substr(PHP_OS,0,3)=='MAC')) {
+    $eol="\r";
+  } else {
+    $eol="\n";
+  }
+
   // Get Configuration Info
   include "/usr/share/supportit/config.php";
+  DATE=$date->format('Y-m-d H:i:s');
 
   // Connect to Mail Server
   $mbox = imap_open("{".$MAIL_CONNECT['Host'].":".$MAIL_CONNECT['Port']."}".$MAIL_CONNECT['Folder'], $MAIL_CONNECT['Username'], $MAIL_CONNECT['Password']) or die("can't connect: " . imap_last_error());
@@ -31,13 +42,67 @@
     // Fetch Contact
     $sql = "SELECT * FROM contacts WHERE email=".$mail_address;
     $contact_result = $conn->query($sql);
+    $contact = mysqli_fetch_assoc($contact_result);
 
-    // Verify Existence of User and Verify Mail Issuer
+    // Verify Existence of User and Verify Mail Issuer for New Ticket
     if ($contact_result->num_rows > 0){
       if ( $email->subject == "New Message From LaswitchTech" ){
         if ( $email->from == "LaswitchTech <info@laswitchtech.com>" ){
           if ( $email->seen == 0 ){
+            $sql = "INSERT INTO tickets ( owner, created, modified, account_id, contact_id, state, status, priority, type, subject, description, resolution, user_id ) VALUES ( 2, $DATE, $DATE, $contact->account_id, $contact->id, 0, 0, 3, 1, $mail_subjet, $mail_description, '', 1 )";
 
+            if ($conn->query($sql) === TRUE) {
+              $last_id = $conn->insert_id;
+              # To Email Address
+              $emailaddress=$mail_address;
+              # Message Subject
+              $emailsubject="Ticket#".$last_id." has been created");
+
+              # Common Headers
+              $headers .= 'From: LaswitchTech-Support <support@laswitchtech.com>'.$eol;
+              $headers .= 'Reply-To: LaswitchTech-Support <support@laswitchtech.com>'.$eol;
+              $headers .= 'Return-Path: LaswitchTech-Support <support@laswitchtech.com>'.$eol;     // these two to set reply address
+              $headers .= "Message-ID:<".$DATE." system@laswitchtech.com>".$eol;
+              $headers .= "X-Mailer: PHP v".phpversion().$eol;           // These two to help avoid spam-filters
+              # Boundry for marking the split & Multitype Headers
+              $mime_boundary=md5(time());
+              $headers .= 'MIME-Version: 1.0'.$eol;
+              $headers .= "Content-Type: multipart/related; boundary=\"".$mime_boundary."\"".$eol;
+              $msg = "";
+
+              # Text Version
+              $msg .= "--".$mime_boundary.$eol;
+              $msg .= "Content-Type: text/plain; charset=iso-8859-1".$eol;
+              $msg .= "Content-Transfer-Encoding: 8bit".$eol;
+              $msg .= "This is a multi-part message in MIME format.".$eol;
+              $msg .= "If you are reading this, please update your email-reading-software.".$eol;
+              $msg .= "+ + Text Only Email from Genius Jon + +".$eol.$eol;
+
+              # Finished
+              $msg .= "--".$mime_boundary."--".$eol.$eol;   // finish with two eol's for better security. see Injection.
+
+              # SEND THE EMAIL
+              ini_set(sendmail_from,'support@laswitchtech.com');  // the INI lines are to force the From Address to be used !
+              mail($emailaddress, $emailsubject, $msg, $headers);
+              ini_restore(sendmail_from);
+
+              //Update log
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', $sql, 1, $_SERVER["REMOTE_ADDR"], 1 )";
+              if ($conn->query($sql) === TRUE) {
+                echo "Log Updated"
+              } else {
+                echo "Error: " . $sql . "<br>" . $conn->error;
+              }
+            } else {
+              echo "Error: " . $sql . "<br>" . $conn->error;
+              //Update log
+              $sql = "INSERT INTO logs ( owner, created, modified, type, tbl, content, user_id, ipv4, is_success ) VALUES ( 1, $DATE, $DATE, 1, 'tickets', $sql, 1, $_SERVER["REMOTE_ADDR"], 0 )";
+              if ($conn->query($sql) === TRUE) {
+                echo "Log Updated"
+              } else {
+                echo "Error: " . $sql . "<br>" . $conn->error;
+              }
+            }
           }
         }
       }
@@ -47,69 +112,4 @@
   // Close both connections
   imap_close($mbox);
   $conn->close();
-?>
-<?php
-
-  if ($result->num_rows > 0) {
-      // output data of each row
-      while($row = $result->fetch_assoc()) {
-          echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["lastname"]. "<br>";
-      }
-  } else {
-      echo "0 results";
-  }
-
-
-  $sql = "INSERT INTO tickets (firstname, lastname, email)
-  VALUES ('John', 'Doe', 'john@example.com')";
-
-  if ($conn->query($sql) === TRUE) {
-      echo "New record created successfully";
-  } else {
-      echo "Error: " . $sql . "<br>" . $conn->error;
-  }
-
-
-
-
-  // Fetch an overview for all messages in Folder
-  $result = imap_fetch_overview($mbox,"1:{$MC->Nmsgs}",0);
-  foreach ($result as $email) {
-
-  //    echo "#{$overview->msgno} ({$overview->date}) - From: {$overview->from}
-  //    {$overview->subject}
-  //    {$overview->message_id}\n";
-      echo "\n";
-      echo "################################################################\n";
-      echo "subject : {$overview->subject}\n";
-      echo "from : {$overview->from}\n";
-      echo "to : {$overview->to}\n";
-      echo "date : {$overview->date}\n";
-      echo "message_id : {$overview->message_id}\n";
-      echo "references : {$overview->references}\n";
-      echo "in_reply_to : {$overview->in_reply_to}\n";
-      echo "size : {$overview->size}\n";
-      echo "uid : {$overview->uid}\n";
-      echo "msgno : {$overview->msgno}\n";
-      echo "recent : {$overview->recent}\n";
-      echo "flagged : {$overview->flagged}\n";
-      echo "answered : {$overview->answered}\n";
-      echo "deleted : {$overview->deleted}\n";
-      echo "seen : {$overview->seen}\n";
-      echo "draft : {$overview->draft}\n";
-      echo "udate : {$overview->udate}\n";
-      $message=imap_qprint(imap_body($mbox, $overview->msgno));
-      echo "message :\n {$message}\n";
-      echo "################################################################\n";
-  }
-
-
-
-
-
-
-
-
-imap_close($mbox);
-$conn->close();
 ?>
