@@ -12,28 +12,6 @@
   // Init Var
   $Ready=0;
 
-  // Body decoding
-  function printarray($array){
-    while(list($key,$value) = each($array)){
-      if(is_array($value)){
-        echo $key."(array):<blockquote>";
-        printarray($value);//recursief!!
-        echo "</blockquote>";
-      }elseif(is_object($value)){
-        echo $key."(object):<blockquote>";
-        printobject($value);
-        echo "</blockquote>";
-      }else{
-        echo $key."==>".$value."<br />";
-      }
-    }
-  }
-
-  function printobject($obj){
-    $array = get_object_vars($obj);
-    printarray($array);
-  }
-
   // Get Configuration Info
   include "/usr/share/supportit/config.php";
   $DATE = date('Y-m-d H:i:s');
@@ -76,12 +54,29 @@
       echo "############################################\n";
       echo "Creating ticket from email\n";
       echo "############################################\n";
+      // Decode email
+      $overview = imap_fetch_overview($mbox, $email->msgno,0);
+      $structure = imap_fetchstructure($mbox, $email->msgno);
+
+      if(isset($structure->parts) && is_array($structure->parts) && isset($structure->parts[1])) {
+          $part = $structure->parts[1];
+          $message = imap_fetchbody($mbox, $email->msgno,2);
+
+          if($part->encoding == 3) {
+              $message = imap_base64($message);
+          } else if($part->encoding == 1) {
+              $message = imap_8bit($message);
+          } else {
+              $message = imap_qprint($message);
+          }
+      }
+
       // Get Email Info
-      $struct = imap_fetchstructure($mbox, $email->msgno);
+      $mail_body = $message;
       $tag = substr($email->from, strpos($email->from, '<')+1);
       $mail_address = substr($tag, 0, strpos($tag, '>'));
       $mail_subjet=$email->subject;
-      $mail_description=printobject($struct);
+      $mail_description=$mail_body;
       // Mail is ready
       $Ready=1;
     }
