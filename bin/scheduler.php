@@ -107,7 +107,7 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
-      $mail_body = getBody($mbox, $email->msgno);
+      $mail_body = getBody($mbox, $email->uid);
 
       // Get Email Info
       $tag = substr($email->from, strpos($email->from, '<')+1);
