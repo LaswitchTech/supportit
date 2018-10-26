@@ -83,6 +83,12 @@
       '=E2=80=93' => '&ndash;', // en dash.
       '=E2=80=94' => '&mdash;', // em dash.
     );
+    // Loop through the encoded characters and replace any that are found.
+    foreach ($characters as $key => $value) {
+      $text = str_replace($key, $value, $text);
+    }
+    return $text;
+  }
 
   // Get Configuration Info
   include "/usr/share/supportit/config.php";
@@ -127,6 +133,7 @@
       echo "Creating ticket from email\n";
       echo "############################################\n";
       // Decode email
+
       // Get the message body.
       $body = imap_fetchbody($mbox, $email->msgno, 1.2);
       if (!strlen($body) > 0) {
@@ -137,14 +144,11 @@
       // Decode body into plaintext (8bit, 7bit, and binary are exempt).
       if ($encoding == 'BASE64') {
         $body = decodeBase64($body);
-      }
-      elseif ($encoding == 'QUOTED-PRINTABLE') {
+      } elseif ($encoding == 'QUOTED-PRINTABLE') {
         $body = decodeQuotedPrintable($body);
-      }
-      elseif ($encoding == '8BIT') {
+      } elseif ($encoding == '8BIT') {
         $body = decode8Bit($body);
-      }
-      elseif ($encoding == '7BIT') {
+      } elseif ($encoding == '7BIT') {
         $body = decode7Bit($body);
       }
 
