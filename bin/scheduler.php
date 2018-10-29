@@ -132,26 +132,15 @@
 
               // Message
               $message = "
-<html>
-<head>
-  <title>Ticket#$last_id has been created</title>
-</head>
-<body>
-  <p>Here are the details of your ticket</p>
-  <table>
-    <tr>
-      <th>E-mail</th>
-      <th>Subject</th>
-      <th>Issue</th>
-    </tr>
-    <tr>
-      <td>$mail_address</td>
-      <td>$mail_subjet</td>
-      <td>$mail_description</td>
-    </tr>
-  </table>
-</body>
-</html>
+Ticket#$last_id has been created\n
+\n
+Content of the ticket : \n
+  E-mail : $mail_address\n
+  Ticket Subject : $mail_subjet\n
+  Ticket Issue : \n
+  ---------------------------------------------------------------------------------------------------------\n
+  $mail_description\n
+  ---------------------------------------------------------------------------------------------------------\n
               ";
 
               // To send HTML mail, the Content-type header must be set
@@ -170,8 +159,7 @@
               echo "###########################################################\n";
               echo "to=> ".$to."\n";
               echo "subject=> ".$subject."\n";
-              echo "message=> ".$message."\n";
-              echo "headers=> ".$headers."\n";
+              //echo "message=> ".$message."\n";
               echo "###########################################################\n";
 
               // Delete Mail
